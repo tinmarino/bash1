@@ -18,48 +18,54 @@
     # Rem: Spaces count
     # Rem: a = 42 ia:s command "a" recevings "=" and "42" as arguments
 
+    # Arithmetic
     b=a+1  # Err2
     # Fix: b=$(( a + 1 ))
     # Rem: The __string__ context is the default context
     # Rem: The arithmetic context starts with "((" in command and $(( in expression
 
+    # Concatenation
     c=a value is $a  # Err3
     Fix: c="a value is $a"
     # Rem: Spaces count
 
-    # TODO
-    #print(c)  # Err4
+    # Command invocation
+    print(c)  # Err4
     # Fix: echo $c
     # Rem: Parenthesis previde array context (in asssignemt expression or subshell in command
 
-    # TODO
-    #for ant in ("DV03", "antenna name with spaces"); do echo $ant; done  # Err5
+    # List declaration
+    for ant in ("DV03", "antenna name with spaces"); do echo $ant; done  # Err5
     # Fix: for s_ant in DV03 "antenna name with spaces"; do
     # Fix:   echo "$s_ant"
     # Fix: done
     # Rem: Parenthesis | Comma -> Spaces
+
+    # TODO Conclusion, BaSh is a Shell languages, token separated with space, immediate are imediates <= string oriented, macro
   }
+
 
   a2_quote(){
     : 'A2: 
     man bash / EXPANSION / Quote Removal
     '
 
+    # Multiple spaces
     a="1   2   3   4   5"
     echo $a  # Err
     # Fix: echo "$a"
 
-    file="/alma/ACS-2021NOV/CONTROL/avoid put spaces in filenames.sh"
+    # Nested command substitution 1
+    file=${BASH_SOURCE[0]}
+    file="/alma/ACS-2021NOV/CONTROL/avoid spaces in filenames.sh"
     echo "$(dirname "$(readlink -f $file)")/script/lib_alma.sh"  # Err
-    # Fix: source "$(dirname "$(readlink -f "$file")")/script/lib_alma.sh"
+    # Fix: echo "$(dirname "$(readlink -f "$file")")/script/lib_alma.sh"
     # Fix: 
-    # Fix: # Source lib_alma even if this file is a symlink
-    # Fix: gs_root_path=$(readlink -f "${BASH_SOURCE[0]}")
+    # Fix: gs_root_path=$(readlink -f "$file")
     # Fix: gs_root_path=$(dirname "$gs_root_path")
-    # Fix: script_path="$gs_root_path"/script
-    # Fix: source "$script_path"/lib_alma.sh
-    
+    # Fix: echo "$gs_root_path"/script/lib_alma.sh
   }
+
 
   a3_context(){
     : 'A3: Everithing is relative ... to the execution context
@@ -113,10 +119,11 @@
     # Fix: echo "Ret: $? (expect 1)"
     # Fix: echo "Out: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
 
-    # TODO quoted
-    a="
-    echo "$()
+    a=anything
+    [[ anything == '$a' ]] && echo Yes  # Err
+    # Fix: [[ anything == "$a" ]] && echo Yes
   }
+
 
   a4_interpolation(){
     : 'A4: Interpolation: get variable and function values
@@ -129,7 +136,6 @@
     man bash / EXPANSION
     man bash / SIMPLE COMMAND EXPANSION
     '
-
   }
 
   a5_array(){
@@ -229,7 +235,7 @@
     compgen -c | grep -i gui
     compgen -v
     compgen -A function
-    compgen -A <tab>
+    compgen -A "<press-tab>"
     # Rem: COMPletion GENerator
 
     # TODO
@@ -284,7 +290,7 @@
   }
 
 
-# Annexe
+# Z/ Annexe
   annexe1_busybox_commands(){
     : '
     '
