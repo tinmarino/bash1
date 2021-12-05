@@ -24,11 +24,13 @@
     Fix: c="a value is $a"
     # Rem: Spaces count
 
-    print(c)  # Err4
+    # TODO
+    #print(c)  # Err4
     # Fix: echo $c
     # Rem: Parenthesis previde array context (in asssignemt expression or subshell in command
 
-    for ant in ("DV03", "antenna name with spaces"); do echo $ant; done  # Err5
+    # TODO
+    #for ant in ("DV03", "antenna name with spaces"); do echo $ant; done  # Err5
     # Fix: for s_ant in DV03 "antenna name with spaces"; do
     # Fix:   echo "$s_ant"
     # Fix: done
@@ -37,19 +39,15 @@
 
   a2_context(){
     : 'A2: Everithing is relative ... to the execution context
-    | Token     | Context     |
-    | ---       | ---         |
-    | [[ ... ]] | String      |
-    | (( ... )) | Arithmetic  |
-    | { ...; }  | Group       |
-    | ( ...; )  | Subshell    |
-    | " ... "   | Quoted      |
-    
-    * Interpolation
-    * Context evaluation
-    * Macro like
+    | Token      | Context      |
+    | ---        | ---          |
+    | [[ ... ]]  | String       |
+    | (( ... ))  | Arithmetic   |
+    | { ...; }   | Group        |
+    | ( ...; )   | Subshell     |
+    | " ... "    | Quoted       |
 
-    man bash / EXPANSION
+    man bash / SHELL GRAMMAR / Compound Commands
     '
 
     if 1==1; then echo Yes; fi  # Err
@@ -65,9 +63,49 @@
     # Rem: Beware autovivication in arithmetic context
     # Rem: (( _nodeclared1 == _notdeclared2 )); echo $?
     # Rem: El contexto arithmetico no cae mal con nadie
+
+    s_with_spaces="toto is nice"
+    [[ $s_with_spaces =~ "^toto" ]] && echo Yes || echo No  # Err  ( I want to check if start by toto )
+    # Fix: [[ $s_with_spaces =~ ^toto ]] && echo Yes || echo No
+    # Fix: rx="^toto is"; [[ "toto is nice" =~ $re ]]; echo $?
+    # Rem: Do not be scared of unquoting immediates without spaces
+
+    # Group
+    { a=10 } [[ $a == 10 ]] && echo Yes  # Err
+    # Fix: { a=10; }; [[ 10 == $a ]]; echo "$? <- $a"
+
+    # Subshell
+    ( a=11; ); [[ 11 == $a ]] && echo Yes  # Err
+    # Fix: ( a=11; [[ $a == 11 ]]; ); echo "$? (expect 0) <- $a"
+    # Fix: a=42 res=42
+    # Fix: (
+    # Fix:   res=0
+    # Fix:   a=11
+    # Fix:   [[ $a == 12 ]]
+    # Fix:   ((res |= $?))
+    # Fix:   echo "Inn: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
+    # Fix:   exit "$res"  # In subshell
+    # Fix: )
+    # Fix: echo "Ret: $? (expect 1)"
+    # Fix: echo "Out: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
+
+    # TODO quoted
   }
 
-  a3_array(){
+  a3_interpolation(){
+    : '
+    | Token      | Substitution |
+    | ---        | ---          |
+    | $( ... )   | Command      |
+    
+    * Macro like
+    man bash / EXPANSION
+    man bash / SIMPLE COMMAND EXPANSION
+    '
+
+  }
+
+  a4_array(){
     : 'A3: Use "@" (not "*") and double quote it
     Ex: a_names=(Ruben "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
@@ -92,32 +130,30 @@
     # Fix:   done
     # Fix: }
   }
+
   
-  a5_introspection(){
-    :'
-      * Configuration
-      * Workflow
-      * TODO Roseta code
-
+# B/ Basic scripts
+  b1_snippet(){
+    : '
     man bash / SHELL BUILTIN COMMANDS
-    man bash / PARAMETERS / Shell Variables
     '
-
     # TODO
     set -u
 
-    toto(){ echo titi; }
-    type toto
+    : ' mutipleline
+     fast comment
+    '
 
-    # TODO
-    compgen -c | grep -i gui
-    # Rem: COMPletion GENerator
+    echo
+    
   }
-  
-# B/ Basic scripts
-  b1_workflow(){
+
+  b2_workflow(){
     : 'B1: Software development life cycle
     Demo: A basic parser, and calculator
+
+    Disclaimer1: Do not reivent the wheel, or for educative purposes
+    Disclaimer2: Make it easy
 
     1. Shbang + safe (set -u)
     2. Enclose in main
@@ -141,7 +177,79 @@
   }
 
 
-# C/ 
+# C/ Advanced tricks
+  c1_introspection(){
+    :'
+    * help
+    * compgen, declare, type
+    * caller
+    * set, shopt, ulimit
+      * Configuration
+      * Workflow
+      * TODO Roseta code
+
+    man bash / SHELL BUILTIN COMMANDS
+    man bash / PARAMETERS / Shell Variables
+    '
+
+    # TODO
+    compgen -c | grep -i gui
+    compgen -v
+    compgen -A function
+    compgen -A <tab>
+    # Rem: COMPletion GENerator
+
+    # TODO
+    declare     # all
+    help declare
+    declare -i -p  # Integer
+    declare -a -p  # Array
+    declare -A -p  # Dictionary (associative array)
+    declare -F -p  # Function Because "declare -f" is showing the associated code
+    declare -x -p  # eXport
+
+    # Demo TODO
+    compgen -A function | sort
+    declare -F -p | cut -d " " -f3 | sort
+
+    # TODO type
+    toto(){ echo titi; }
+    type toto
+
+    # TODO stack
+    print_stack(){
+      local i
+      for i in "${!FUNCNAME[@]}"; do
+        echo "$i/ Function:${FUNCNAME[$i]}, File:${BASH_SOURCE[$i]}, Line:${BASH_LINENO[$i]}"
+        #echo -ne "$i/ "
+        #caller "$i"
+      done
+    }
+    f1(){ print_stack; }
+    f2(){ f1; }
+    # Rem: Loop index: Could use ${#arr[@]} like in for i in $(eval echo "{0..$((${#arr[@]}-1))}")
+
+  }
+
+  c2_dict(){
+    : '
+    '
+  }
+
+  c11_async1(){
+    : '
+    * jobs TODO
+    * wait TODO
+    TODO job control
+    '
+  }
+
+  c12_async2(){
+    : '
+    TODO joc control
+    '
+  }
+
 
 # Annexe
   annexe1_busybox_commands(){
@@ -150,6 +258,7 @@
       * grep -> ripgrep
       * 
     '
+  }
 
   annexe2_Links(){
     echo '
@@ -168,3 +277,4 @@
       
       * Code: [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
     '
+  }

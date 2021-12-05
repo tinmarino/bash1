@@ -1,16 +1,18 @@
 
 
 # TODO
-* Shbang
-  * #!/usr/bin/env bash
 * Hands on
   * ShowRunnginVersion to dict
+  * Dispacher
   * MultiFAR
   * Multi-read-doc from file in //
-* Arrays
-* Restore jupyter
 * Fond naming convetion for functions and docstring
-* Embed markdown syntax in docstring
+* Vim: Embed markdown syntax in docstring
+* Quote in Quote
+* Show local
+
+# DOne
+
 
 ## A.1. Assignment
 
@@ -171,3 +173,11 @@ set -u
 
 ## B.1
 
+# DONE
+* Shbang
+  * #!/usr/bin/env bash
+  * DONE in minimal parsing
+* Arrays
+  * DONE at Chapter A
+* Restore jupyter
+  * DONE doing BaSh presentation
