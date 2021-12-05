@@ -4,12 +4,15 @@
   a1_space(){
     : 'A1: Parenthesis or Comma -> Space
 
-    <= A variable may be assigned to by a statement of the form
-    <= 
-    <=        name=[value]
+    ```
+    A variable may be assigned to by a statement of the form
+    
+           name=[value]
+    ```
     man bash / PARAMETERS
     '
     
+    # Asignment
     a = 42  # Err1
     # Fix: a=42
     # Rem: Spaces count
@@ -37,8 +40,29 @@
     # Rem: Parenthesis | Comma -> Spaces
   }
 
-  a2_context(){
-    : 'A2: Everithing is relative ... to the execution context
+  a2_quote(){
+    : 'A2: 
+    man bash / EXPANSION / Quote Removal
+    '
+
+    a="1   2   3   4   5"
+    echo $a  # Err
+    # Fix: echo "$a"
+
+    file="/alma/ACS-2021NOV/CONTROL/avoid put spaces in filenames.sh"
+    echo "$(dirname "$(readlink -f $file)")/script/lib_alma.sh"  # Err
+    # Fix: source "$(dirname "$(readlink -f "$file")")/script/lib_alma.sh"
+    # Fix: 
+    # Fix: # Source lib_alma even if this file is a symlink
+    # Fix: gs_root_path=$(readlink -f "${BASH_SOURCE[0]}")
+    # Fix: gs_root_path=$(dirname "$gs_root_path")
+    # Fix: script_path="$gs_root_path"/script
+    # Fix: source "$script_path"/lib_alma.sh
+    
+  }
+
+  a3_context(){
+    : 'A3: Everithing is relative ... to the execution context
     | Token      | Context      |
     | ---        | ---          |
     | [[ ... ]]  | String       |
@@ -90,22 +114,25 @@
     # Fix: echo "Out: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
 
     # TODO quoted
+    a="
+    echo "$()
   }
 
-  a3_interpolation(){
-    : '
+  a4_interpolation(){
+    : 'A4: Interpolation: get variable and function values
+    Looks like macros in C
+
     | Token      | Substitution |
     | ---        | ---          |
     | $( ... )   | Command      |
     
-    * Macro like
     man bash / EXPANSION
     man bash / SIMPLE COMMAND EXPANSION
     '
 
   }
 
-  a4_array(){
+  a5_array(){
     : 'A3: Use "@" (not "*") and double quote it
     Ex: a_names=(Ruben "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
@@ -130,6 +157,7 @@
     # Fix:   done
     # Fix: }
   }
+
 
   
 # B/ Basic scripts
@@ -159,20 +187,24 @@
     2. Enclose in main
     3. Comment skeleton
     4. Baby steps
-      4.1 Code <-> Execute
-      4.2 In doubt, try minimal example in shell
-      4.3 Use template functions. Ex: tpl(){ : ; }
-      4.4 Print steps
-      4.5 No early optimisation
-      4.6 Document progressively (in usage or docstrings)
-      4.7 Use Linter
+      * Code <-> Execute
+      * In doubt, try minimal example in shell
+      * Use template functions. Ex: tpl(){ : ; }
+      * Print steps
+      * No early optimisation
+      * Document progressively (in usage or docstrings)
+      * Use __Linter__
     5. See where it can fail
-      5.1 Local variables not leaking
-      5.2 External context not leaking
+      * Local variables not leaking
+      * External context not leaking
     6. Create a non-regression script
     7. Optimise => Goto 3/
 
     TOTO reference
+    '
+
+    awk 'awk code TOREM 
+    /asdasd/ {exit }
     '
   }
 
@@ -180,13 +212,14 @@
 # C/ Advanced tricks
   c1_introspection(){
     :'
-    * help
-    * compgen, declare, type
-    * caller
-    * set, shopt, ulimit
-      * Configuration
-      * Workflow
-      * TODO Roseta code
+    help
+    compgen, declare, type
+    caller
+    set, shopt, ulimit, uset
+
+    * Configuration
+    * Workflow
+    * TODO Roseta code
 
     man bash / SHELL BUILTIN COMMANDS
     man bash / PARAMETERS / Shell Variables
@@ -253,11 +286,18 @@
 
 # Annexe
   annexe1_busybox_commands(){
-    echo '
-      * sed
-      * grep -> ripgrep
-      * 
+    : '
     '
+    a_cmd=(
+      sed  # Big dady
+      xargs  # Piper champion
+      grep  # -> ripgrep
+      rev  # To reverse characters (columns) of each line
+      tac  # To reverse lines
+    )
+    for s_cmd in "${a_cmd[@]}"; do
+      apropos -l "^$s_cmd$"
+    done
   }
 
   annexe2_Links(){
