@@ -9,6 +9,8 @@
   * Multi-read-doc from file in //
 * Arrays
 * Restore jupyter
+* Fond naming convetion for functions and docstring
+* Embed markdown syntax in docstring
 
 ## A.1. Assignment
 
@@ -68,7 +70,7 @@ control_good(){
   for ant in DV03 DV25; do echo $ant; done
 
   case DV03 in
-    DV*) echo Vertex;;
+    DV*) echo Vertex; echo tot; exit;;
     DA*) echo AEM;;
     *) echo Other;;
   esac
@@ -169,25 +171,3 @@ set -u
 
 ## B.1
 
-# Annexe1: Busybox commands
-
-* sed
-* grep -> ripgrep
-* 
-
-# Annexe2: Links
-
-* Book: [Advanced BaSh scripting Guide (ABS)](https://tldp.org/LDP/abs/abs-guide.pdf)
-  __The reference__
-  An in-depth exploration of the art of shell scripting
-  By Mendel Cooper
-
-
-* Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
-  by William Shotts
-
-* Post: [Object Oriented BaSh](https://stackoverflow.com/questions/36771080/creating-classes-and-objects-using-bash-scripting)
-
-* Program: [Jupyter BaSh kernel](https://github.com/takluyver/bash_kernel), and [jupyter-vim](https://github.com/jupyter-vim/jupyter-vim)
-
-* Code: [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
