@@ -26,7 +26,7 @@
 
     # Concatenation
     c=a value is $a  # Err3
-    Fix: c="a value is $a"
+    # Fix: c="a value is $a"
     # Rem: Spaces count
 
     # Command invocation
@@ -44,9 +44,11 @@
     # TODO Conclusion, BaSh is a Shell languages, token separated with space, immediate are imediates <= string oriented, macro
   }
 
-
   a2_quote(){
-    : 'A2: 
+    : 'A2: Quote to prevent word expansion (except array)
+    Do not quote if you want word expansion  (except array)
+
+    man bash / QUOTING
     man bash / EXPANSION / Quote Removal
     '
 
@@ -65,7 +67,6 @@
     # Fix: gs_root_path=$(dirname "$gs_root_path")
     # Fix: echo "$gs_root_path"/script/lib_alma.sh
   }
-
 
   a3_context(){
     : 'A3: Everithing is relative ... to the execution context
@@ -124,7 +125,6 @@
     # Fix: [[ anything == "$a" ]] && echo Yes
   }
 
-
   a4_interpolation(){
     : 'A4: Interpolation: get variable and function values
     Looks like macros in C
@@ -163,7 +163,6 @@
     # Fix:   done
     # Fix: }
   }
-
 
   
 # B/ Basic scripts
@@ -219,9 +218,9 @@
   c1_introspection(){
     :'
     help
-    compgen, declare, type
-    caller
-    set, shopt, ulimit, uset
+    compgen declare type
+    caller trap
+    set shopt ulimit uset
 
     * Configuration
     * Workflow
@@ -231,14 +230,14 @@
     man bash / PARAMETERS / Shell Variables
     '
 
-    # TODO
+    # Display possible completions
     compgen -c | grep -i gui
     compgen -v
     compgen -A function
     compgen -A "<press-tab>"
     # Rem: COMPletion GENerator
 
-    # TODO
+    # Declare variables and give them attributes
     declare     # all
     help declare
     declare -i -p  # Integer
@@ -267,7 +266,6 @@
     f1(){ print_stack; }
     f2(){ f1; }
     # Rem: Loop index: Could use ${#arr[@]} like in for i in $(eval echo "{0..$((${#arr[@]}-1))}")
-
   }
 
   c2_dict(){
@@ -300,6 +298,9 @@
       grep  # -> ripgrep
       rev  # To reverse characters (columns) of each line
       tac  # To reverse lines
+      cut  # -d" " (delimiter) -f2-9 (from 2 to 9)
+      date   #
+      strace
     )
     for s_cmd in "${a_cmd[@]}"; do
       apropos -l "^$s_cmd$"
@@ -316,11 +317,15 @@
       
       * Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
         by William Shotts
+
+      * Book: [Pure BaSh Bible](https://github.com/dylanaraps/pure-bash-bible)
       
       * Post: [Object Oriented BaSh](https://stackoverflow.com/questions/36771080/creating-classes-and-objects-using-bash-scripting)
       
       * Program: [Jupyter BaSh kernel](https://github.com/takluyver/bash_kernel), and [jupyter-vim](https://github.com/jupyter-vim/jupyter-vim)
       
       * Code: [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
+
+      * Code: vim +"e \$VIMRUNTIME/syntax/sh.vim"
     '
   }

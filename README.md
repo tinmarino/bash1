@@ -12,6 +12,7 @@
 * Show local
 * Quote in Quote
   * Idea check if is prime
+* $IFS
 
 # DONE
 
@@ -29,6 +30,11 @@ seq 2 9|xargs -Iz seq -s' ' z z z0|cut -d" " -f 2-9 | xargs -n1 factor
 seq 9|xargs -Iz seq -s' ' z z z0
 
 seq 2 100|factor|sed 's/.*: //g;/ /d'
+seq 1e6|factor|awk '$0=$2*!$3'
+
+echo $((`printf %d \':`#yG))
+printf %x \'—  # 2014
+printf %d \'A
 
 
 for i in $(seq 2 9);do seq -s" "  "$i" "$i" "$((9*i))"; done| cut -d" " -f2-9
@@ -179,6 +185,96 @@ dict_good(){
 set -u
 ```
 
+# Game
+
+https://codegolf.stackexchange.com/questions/28786/write-a-program-that-makes-2-2-5
+```bash
+# For people who don't know Bash: $((...expr...)) is a syntax to evaluate arithmetic expressions. $(bc<<<...expr...) does the same using the bc command-line calculator.
+v=2                       #v is 2
+v+=2                      #v is 4
+v=$((v * 5))              #v is 20
+v=$((v - 16))             #v is 4
+v=$(bc <<< "sqrt($v)+2")  #v is 4 (sqrt(4) is 2)
+v=$(bc <<< "$v/4+3")      #v is 4 (4/4 = 1)
+echo "2+2=$v"             #So v is 4...?
+```
+
+# Game2
+
+```bash
+# strings of length 2
+x="ab"
+y="cd"
+
+# add lengths by concatenation
+c="$(cat<<<$x; cat<<<$y)"
+
+# display the lengths of the parts and the sum
+echo "${#x} + ${#y} = ${#c}"
+```
+
+# Game3
+
+```bash
+# Create an array of ascending integers
+a=({1..10})
+
+# Use the sum to index into the array
+s="2 + 2"
+i=$(($s))
+echo "$s = ${a[$i]}"
+```
+
+
+# Snippet
+
+```bash
+get_functions() {
+    # Usage: get_functions
+    IFS=$'\n' read -d "" -ra functions < <(declare -F)
+    printf '%s\n' "${functions[@]//declare -f }"
+}
+
+# Sleep
+read -rt 0.1 <> <(:)
+```
+
+
+# Snippet variable references
+
+```bash
+var="world"
+declare "hello_$var=value"
+printf '%s\n' "$hello_world"
+value
+
+hello_world="value"
+
+# Create the variable name.
+var="world"
+ref="hello_$var"
+
+# Print the value of the variable name stored in 'hello_$var'.
+printf '%s\n' "${!ref}"
+value
+
+# Need bash4.3
+
+hello_world="value"
+var="world"
+
+# Declare a nameref.
+declare -n ref=hello_$var
+
+printf '%s\n' "$ref"
+value
+```
+
+# Snippet Random
+```bash
+
+"$RANDOM"
+```
 
 ## B.1
 
