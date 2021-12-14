@@ -13,6 +13,7 @@
 * Quote in Quote
   * Idea check if is prime
 * $IFS
+* curl https://raw.githubusercontent.com/tinmarino/bash1/master/bask_programming.bash
 
 # DONE
 
