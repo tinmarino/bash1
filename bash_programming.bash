@@ -1,17 +1,26 @@
 #!/usr/bin/env bash
 # +/ Intro
   : '
-    A/ Bash shelling
-      * 
-    B/ Bash scripting
-      * 
-
-    C/ Bash programming
-      *
+  TOC:
+    A/ Bash Shelling
+    ----------------
+      A.1/ Token and space
+      A.2/ Interpolation and quote
+      B.3/ Context and array
+    B/ Bash Scripting
+    -----------------
+      B.1/ Function and scope
+      B.2/ Introspection and builtins
+      B.3/ Process control and job
+    C/ Bash Programming
+    -------------------
+      C.1/ Life cycle and workflow
+      C.2/ Binary and library
+      C.3/ Program and asynchronism
   '
 
-# A/ Bash shelling
-  a1_space(){
+# A/ Bash Shelling
+  a1_token_and_space(){
     : 'A1: Parenthesis or Comma -> Space
 
     ```
@@ -54,8 +63,18 @@
     # TODO Conclusion, BaSh is a Shell languages, token separated with space, immediate are imediates <= string oriented, macro
   }
 
-  a2_quote(){
-    : 'A2: Quote to prevent word expansion (except array)
+  a2_interpolation_and_quote(){
+    : 'A2: Interpolation: get variable and function values
+    Looks like macros in C
+
+    | Token      | Substitution |
+    | ---        | ---          |
+    | $( ... )   | Command      |
+    
+    man bash / EXPANSION
+    man bash / SIMPLE COMMAND EXPANSION
+
+    A2: Quote to prevent word expansion (except array)
     Do not quote if you want word expansion  (except array)
 
     man bash / QUOTING
@@ -78,7 +97,7 @@
     # Fix: echo "$gs_root_path"/script/lib_alma.sh
   }
 
-  a3_context(){
+  a3_context_and_array(){
     : 'A3: Everithing is relative ... to the execution context
     | Token      | Context      |
     | ---        | ---          |
@@ -87,7 +106,9 @@
     | { ...; }   | Group        |
     | ( ...; )   | Subshell     |
     | " ... "    | Quoted       |
+    | # ...      | Comment      |
 
+    TODO  String and comment
     man bash / SHELL GRAMMAR / Compound Commands
     '
 
@@ -133,22 +154,7 @@
     a=anything
     [[ anything == '$a' ]] && echo Yes  # Err
     # Fix: [[ anything == "$a" ]] && echo Yes
-  }
 
-  a4_interpolation(){
-    : 'A4: Interpolation: get variable and function values
-    Looks like macros in C
-
-    | Token      | Substitution |
-    | ---        | ---          |
-    | $( ... )   | Command      |
-    
-    man bash / EXPANSION
-    man bash / SIMPLE COMMAND EXPANSION
-    '
-  }
-
-  a5_array(){
     : 'A3: Use "@" (not "*") and double quote it
     Ex: a_names=(Ruben "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
@@ -172,16 +178,24 @@
     # Fix:     echo "$((cnt++))/ $s_arg"  # Fix2.2
     # Fix:   done
     # Fix: }
+
+    TODO Dictionaray alias associative arrays
   }
 
   
-# B/ Basic scripting
-  c1_introspection(){
-    :'
+# B/ Basic Scripting
+  b1_function_and_scope(){
+    :
+  }
+  b2_introspection_and_builtin(){
+    : '
+    man bash
     help
-    compgen declare type
-    caller trap
+    compgen -b        # list builtins like help and compgen
+    declare type      # real (user) introspection
+    caller trap       # stack tracing and debugging
     set shopt ulimit uset
+                      # configuring
 
     * Configuration
     * Workflow
@@ -192,11 +206,13 @@
     '
 
     # Display possible completions
-    compgen -c | grep -i gui
-    compgen -v
+    compgen -c | grep -i gui  # c like command
+    compgen -A "<press-tab>"  # With bash > 4.4 <= Alma is too old
     compgen -A function
-    compgen -A "<press-tab>"
+    compgen -v
     # Rem: COMPletion GENerator
+    # Rem: help compgen
+    # Rem: man bash / SHELL BUILTIN COMMAND / compgne / complete / action
 
     # Declare variables and give them attributes
     declare     # all
@@ -207,7 +223,8 @@
     declare -F -p  # Function Because "declare -f" is showing the associated code
     declare -x -p  # eXport
 
-    # Demo TODO
+    # Some features are accessible by both
+    # For example the function list
     compgen -A function | sort
     declare -F -p | cut -d " " -f3 | sort
 
@@ -218,23 +235,20 @@
     # TODO stack
     print_stack(){
       local i
+      local fstg="%1s/ %20s %20s %20s\n"
+      printf "$fstg" "" Function File Line
       for i in "${!FUNCNAME[@]}"; do
-        echo "$i/ Function:${FUNCNAME[$i]}, File:${BASH_SOURCE[$i]}, Line:${BASH_LINENO[$i]}"
-        #echo -ne "$i/ "
-        #caller "$i"
+        printf "$fstg" "$i" "${FUNCNAME[$i]}" "${BASH_SOURCE[$i]}" "${BASH_LINENO[$i]}"
       done
     }
-    f1(){ print_stack; }
-    f2(){ f1; }
+    second(){ print_stack; }
+    first(){ second; }
+    first
+    # Rem: I prefer 
     # Rem: Loop index: Could use ${#arr[@]} like in for i in $(eval echo "{0..$((${#arr[@]}-1))}")
   }
 
-  c2_dict(){
-    : '
-    '
-  }
-
-  c11_async1(){
+  b3_process_control_and_job(){
     : '
     * jobs TODO
     * wait TODO
@@ -242,26 +256,13 @@
     '
   }
 
-  c12_async2(){
-    : '
-    TODO joc control
-    '
-  }
 
+# C/ Bash Programming
+  c1_life_cycle_and_workflow(){
+    : 'C1: Software development life cycle
 
-
-
-# C/ Bash programming
-  : '
-  Early return to decrease mental stack
-
-  '
-  c1_workflow(){
-    : 'B1: Software development life cycle
-    Demo: A basic parser, and calculator
-
-    Disclaimer1: Do not reivent the wheel, or for educative purposes
-    Disclaimer2: Make it easy
+    Do not reivent the wheel, or for educative purposes
+    Make it easy
 
     1. Shbang + safe (set -u)
     2. Enclose in main
@@ -280,15 +281,22 @@
     6. Create a non-regression script
     7. Optimise => Goto 3/
 
-    TOTO reference
+    TODO reference
     '
 
     awk 'awk code TOREM 
     /asdasd/ {exit }
     '
+
+    TODO Early return to decrease mental stack
+    TODO Demo: A basic parser, and calculator
   }
 
-  c2_get_first_prime(){
+  c2_binary_and_library(){
+    :
+  }
+
+  c3_program_and_asynchornism(){
   }
 
 
@@ -334,5 +342,7 @@
       * Code: [Unicode math operators](http://xahlee.info/comp/unicode_math_operators.html)
 
       * Code: vim +"e \$VIMRUNTIME/syntax/sh.vim"
+
+      * Doc: https://programmingpraxis.files.wordpress.com/2012/09/primenumbers.pdf
     '
   }
