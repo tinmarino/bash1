@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
+# +/ Intro
+  : '
+    A/ Bash shelling
+      * 
+    B/ Bash scripting
+      * 
 
-# A/ Take away
+    C/ Bash programming
+      *
+  '
+
+# A/ Bash shelling
   a1_space(){
     : 'A1: Parenthesis or Comma -> Space
 
@@ -83,7 +93,7 @@
 
     if 1==1; then echo Yes; fi  # Err
     # Fix: if (( 1==1 )); then echo Yes; fi
-    # Fix: if true ; then echo Yes; fi
+    # Fix: if true; then echo Yes; fi
     # Rem: "if" is expected a command and "((" is the arithemtic compound command
     # Rem: man bash / ARITHMETIC EVALUATION
 
@@ -165,56 +175,7 @@
   }
 
   
-# B/ Basic scripts
-  b1_snippet(){
-    : '
-    man bash / SHELL BUILTIN COMMANDS
-    '
-    # TODO
-    set -u
-
-    : ' mutipleline
-     fast comment
-    '
-
-    echo
-    
-  }
-
-  b2_workflow(){
-    : 'B1: Software development life cycle
-    Demo: A basic parser, and calculator
-
-    Disclaimer1: Do not reivent the wheel, or for educative purposes
-    Disclaimer2: Make it easy
-
-    1. Shbang + safe (set -u)
-    2. Enclose in main
-    3. Comment skeleton
-    4. Baby steps
-      * Code <-> Execute
-      * In doubt, try minimal example in shell
-      * Use template functions. Ex: tpl(){ : ; }
-      * Print steps
-      * No early optimisation
-      * Document progressively (in usage or docstrings)
-      * Use __Linter__
-    5. See where it can fail
-      * Local variables not leaking
-      * External context not leaking
-    6. Create a non-regression script
-    7. Optimise => Goto 3/
-
-    TOTO reference
-    '
-
-    awk 'awk code TOREM 
-    /asdasd/ {exit }
-    '
-  }
-
-
-# C/ Advanced tricks
+# B/ Basic scripting
   c1_introspection(){
     :'
     help
@@ -288,6 +249,49 @@
   }
 
 
+
+
+# C/ Bash programming
+  : '
+  Early return to decrease mental stack
+
+  '
+  c1_workflow(){
+    : 'B1: Software development life cycle
+    Demo: A basic parser, and calculator
+
+    Disclaimer1: Do not reivent the wheel, or for educative purposes
+    Disclaimer2: Make it easy
+
+    1. Shbang + safe (set -u)
+    2. Enclose in main
+    3. Comment skeleton
+    4. Baby steps
+      * Code <-> Execute
+      * In doubt, try minimal example in shell
+      * Use template functions. Ex: tpl(){ : ; }
+      * Print steps
+      * No early optimisation
+      * Document progressively (in usage or docstrings)
+      * Use __Linter__
+    5. See where it can fail
+      * Local variables not leaking
+      * External context not leaking
+    6. Create a non-regression script
+    7. Optimise => Goto 3/
+
+    TOTO reference
+    '
+
+    awk 'awk code TOREM 
+    /asdasd/ {exit }
+    '
+  }
+
+  c2_get_first_prime(){
+  }
+
+
 # Z/ Annexe
   annexe1_busybox_commands(){
     : '
@@ -314,7 +318,6 @@
         An in-depth exploration of the art of shell scripting
         By Mendel Cooper
       
-      
       * Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
         by William Shotts
 
@@ -325,6 +328,10 @@
       * Program: [Jupyter BaSh kernel](https://github.com/takluyver/bash_kernel), and [jupyter-vim](https://github.com/jupyter-vim/jupyter-vim)
       
       * Code: [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
+
+      * Code: [bash git](git://git.savannah.gnu.org/bash.git)
+
+      * Code: [Unicode math operators](http://xahlee.info/comp/unicode_math_operators.html)
 
       * Code: vim +"e \$VIMRUNTIME/syntax/sh.vim"
     '
