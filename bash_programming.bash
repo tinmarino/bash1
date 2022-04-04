@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+
 # +/ Intro
-  : '
+  : $'
   TOC:
     A/ Bash Shelling
     ----------------
@@ -21,7 +22,7 @@
 
 # A/ Bash Shelling
   a1_token_and_space(){
-    : 'A1: Parenthesis or Comma -> Space
+    : $'A1: Parenthesis or Comma -> Space
 
     ```
     A variable may be assigned to by a statement of the form
@@ -49,26 +50,29 @@
     # Rem: Spaces count
 
     # Command invocation
-    print(c)  # Err4
+    #print(c)  # Err4  (commented for linter)
     # Fix: echo $c
     # Rem: Parenthesis previde array context (in asssignemt expression or subshell in command
 
     # List declaration
-    for ant in ("DV03", "antenna name with spaces"); do echo $ant; done  # Err5
+    #for ant in ("DV03", "antenna name with spaces"); do echo $ant; done  # Err5
     # Fix: for s_ant in DV03 "antenna name with spaces"; do
     # Fix:   echo "$s_ant"
     # Fix: done
     # Rem: Parenthesis | Comma -> Spaces
 
     # TODO Conclusion, BaSh is a Shell languages, token separated with space, immediate are imediates <= string oriented, macro
+    : 'TODO ToRemember: 
+    '
   }
 
   a2_interpolation_and_quote(){
-    : 'A2: Interpolation: get variable and function values
+    : $'A2: Interpolation: get variable values or command stdout
     Looks like macros in C
 
     | Token      | Substitution |
     | ---        | ---          |
+    | ${ ... }   | Variable     |
     | $( ... )   | Command      |
     
     man bash / EXPANSION
@@ -98,7 +102,7 @@
   }
 
   a3_context_and_array(){
-    : 'A3: Everithing is relative ... to the execution context
+    : $'A3: Everithing is relative ... to the execution context
     | Token      | Context      |
     | ---        | ---          |
     | [[ ... ]]  | String       |
@@ -133,7 +137,7 @@
     # Rem: Do not be scared of unquoting immediates without spaces
 
     # Group
-    { a=10 } [[ $a == 10 ]] && echo Yes  # Err
+    #{ a=10 } [[ $a == 10 ]] && echo Yes  # Err (commented for linter)
     # Fix: { a=10; }; [[ 10 == $a ]]; echo "$? <- $a"
 
     # Subshell
@@ -155,7 +159,7 @@
     [[ anything == '$a' ]] && echo Yes  # Err
     # Fix: [[ anything == "$a" ]] && echo Yes
 
-    : 'A3: Use "@" (not "*") and double quote it
+    : $'A3: Use "@" (not "*") and double quote it
     Ex: a_names=(Ruben "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
     TODO
@@ -187,8 +191,9 @@
   b1_function_and_scope(){
     :
   }
+
   b2_introspection_and_builtin(){
-    : '
+    : $'
     man bash
     help
     compgen -b        # list builtins like help and compgen
@@ -228,17 +233,18 @@
     compgen -A function | sort
     declare -F -p | cut -d " " -f3 | sort
 
-    # TODO type
+    # Code inspection
     toto(){ echo titi; }
     type toto
 
-    # TODO stack
+    # Stack tracing
     print_stack(){
+      : 'Print current stack trace to stderr'
       local i
       local fstg="%1s/ %20s %20s %20s\n"
-      printf "$fstg" "" Function File Line
+      >&2 printf "$fstg" "" Function File Line
       for i in "${!FUNCNAME[@]}"; do
-        printf "$fstg" "$i" "${FUNCNAME[$i]}" "${BASH_SOURCE[$i]}" "${BASH_LINENO[$i]}"
+        >&2 printf "$fstg" "$i" "${FUNCNAME[$i]}" "${BASH_SOURCE[$i]}" "${BASH_LINENO[$i]}"
       done
     }
     second(){ print_stack; }
@@ -259,7 +265,7 @@
 
 # C/ Bash Programming
   c1_life_cycle_and_workflow(){
-    : 'C1: Software development life cycle
+    : $'C1: Software development life cycle
 
     Do not reivent the wheel, or for educative purposes
     Make it easy
@@ -297,6 +303,7 @@
   }
 
   c3_program_and_asynchornism(){
+    :
   }
 
 
@@ -320,7 +327,7 @@
   }
 
   annexe2_Links(){
-    echo '
+    echo $'
       * Book: [Advanced BaSh scripting Guide (ABS)](https://tldp.org/LDP/abs/abs-guide.pdf)
         __The reference__
         An in-depth exploration of the art of shell scripting
