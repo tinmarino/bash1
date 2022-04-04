@@ -1,17 +1,9 @@
 
 
 # TODO
-* Hands on
-  * Multi get Cyrostat status
-  * ShowRunnginVersion to dict
-  * Dispacher
-  * MultiFAR
-  * Multi-read-doc from file in //
-* Fond naming convetion for functions and docstring
+
 * Vim: Embed markdown syntax in docstring
-* Show local
-* Quote in Quote
-  * Idea check if is prime
+* Code: finishe is prime
 * $IFS
 * curl https://raw.githubusercontent.com/tinmarino/bash1/master/bask_programming.bash
 
@@ -305,6 +297,7 @@ printf '%s\n' "$ref"
 value
 ```
 
+# 
 # WTF is that
 
 ```bash
@@ -317,9 +310,9 @@ a='\#'; echo "${a@P}"  # Command number, after 4.4
 "$RANDOM"
 ```
 
-## B.1
 
-# DONE
+## Old or DONE
+
 * Shbang
   * #!/usr/bin/env bash
   * DONE in minimal parsing
@@ -327,3 +320,12 @@ a='\#'; echo "${a@P}"  # Command number, after 4.4
   * DONE at Chapter A
 * Restore jupyter
   * DONE doing BaSh presentation
+* Hands on
+  * DONE => passed
+  * Multi get Cyrostat status
+  * ShowRunnginVersion to dict
+  * Dispacher
+  * MultiFAR
+  * Multi-read-doc from file in //
+* Fond naming convetion for functions and docstring
+  * DONE put google ref

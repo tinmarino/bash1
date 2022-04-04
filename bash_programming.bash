@@ -24,12 +24,18 @@
   a1_token_and_space(){
     : $'A1: Parenthesis or Comma -> Space
 
+    man bash / SHELL GRAMMAR
+    ```
+    A simple command  is  a sequence of optional variable assignments followed by blank-separated words and redirections, and terminated by a control operator
+    ```
+    Note the blank-separated
+
+    man bash / PARAMETERS
     ```
     A variable may be assigned to by a statement of the form
     
            name=[value]
     ```
-    man bash / PARAMETERS
     '
     
     # Asignment
@@ -83,12 +89,27 @@
 
     man bash / QUOTING
     man bash / EXPANSION / Quote Removal
+
+    TODO basic interpolation
+    TODO nested quote 
+    TODO quote removal 
     '
 
     # Multiple spaces
     a="1   2   3   4   5"
     echo $a  # Err
     # Fix: echo "$a"
+
+    # Hacky syntax (not intuitive at first)
+    a="1   2   3   4   5"
+    b=$a
+    b="${a} is fine"
+    echo "$b"
+    b=$a echo "$b"  # Output ?
+
+    a=42
+    b="$(echo "$(echo "$(( a - 42 + "$(echo 5)" ))")")"
+    echo "$b"  # Output ?
 
     # Nested command substitution 1
     file=${BASH_SOURCE[0]}
@@ -337,6 +358,8 @@
         by William Shotts
 
       * Book: [Pure BaSh Bible](https://github.com/dylanaraps/pure-bash-bible)
+
+      * Doc: [Google coding style for BaSh](https://google.github.io/styleguide/shellguide.html)
       
       * Post: [Object Oriented BaSh](https://stackoverflow.com/questions/36771080/creating-classes-and-objects-using-bash-scripting)
       
@@ -349,6 +372,8 @@
       * Code: [Unicode math operators](http://xahlee.info/comp/unicode_math_operators.html)
 
       * Code: vim +"e \$VIMRUNTIME/syntax/sh.vim"
+
+      * Code: [Bison syntax declaration](https://github.com/bminor/bash/blob/bash-5.1/parse.y#L356-L372)
 
       * Doc: https://programmingpraxis.files.wordpress.com/2012/09/primenumbers.pdf
     '
