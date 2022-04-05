@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# +/ Intro
+# +/ Introduction
   : $'
   TOC:
+    -/ Introduction
     A/ Bash Shelling
     ----------------
       A.1/ Token and space
@@ -18,6 +19,7 @@
       C.1/ Life cycle and workflow
       C.2/ Binary and library
       C.3/ Program and asynchronism
+    +/ Annex
   '
 
 # A/ Bash Shelling
@@ -259,18 +261,18 @@
     type toto
 
     # Stack tracing
-    print_stack(){
-      : 'Print current stack trace to stderr'
-      local i
-      local fstg="%1s/ %20s %20s %20s\n"
-      >&2 printf "$fstg" "" Function File Line
-      for i in "${!FUNCNAME[@]}"; do
-        >&2 printf "$fstg" "$i" "${FUNCNAME[$i]}" "${BASH_SOURCE[$i]}" "${BASH_LINENO[$i]}"
-      done
-    }
-    second(){ print_stack; }
-    first(){ second; }
-    first
+print_stack(){
+  : 'Print current stack trace to stderr'
+  local i
+  local fstg="%1s/ %20s %20s %20s\n"
+  >&2 printf "$fstg" "" Function File Line
+  for i in "${!FUNCNAME[@]}"; do
+    >&2 printf "$fstg" "$i" "${FUNCNAME[$i]}" "${BASH_SOURCE[$i]}" "${BASH_LINENO[$i]}"
+  done
+}
+second(){ print_stack; }
+first(){ second; }
+first
     # Rem: I prefer 
     # Rem: Loop index: Could use ${#arr[@]} like in for i in $(eval echo "{0..$((${#arr[@]}-1))}")
   }
@@ -328,7 +330,7 @@
   }
 
 
-# Z/ Annexe
+# +/ Annex
   annexe1_busybox_commands(){
     : '
     '
