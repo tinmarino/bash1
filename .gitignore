@@ -1,0 +1,16 @@
+# LaTeX
+*.bak
+*.dvi
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
+*.log
+*.aux
+*.tar
+*.bbl
+*.blg
+*.bcf
+.Trash-1000/
+*.backup
+*.pdf
