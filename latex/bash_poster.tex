@@ -1,0 +1,254 @@
+\documentclass[20pt,a0paper,portrait]{tikzposter}
+%\documentclass[20pt,portrait,margin=5mm,innermargin=-4.5in,blockverticalspace=-0.25in]{tikzposter}
+%\geometry{paperwidth=46.8in,paperheight=33.1in} % A0 = 1189 x 841 = 46.8 x 33.1
+\usepackage[utf8]{inputenc}
+
+% Beamer of stockholm
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{enumitem}
+\usepackage[backend=biber,style=numeric]{biblatex}
+
+% Gruvbox: https://github.com/morhetz/gruvbox
+\usepackage{xcolor}
+\definecolor{bluekeywords} {rgb}{0.13, 0.13, 1}
+\definecolor{greencomments}{rgb}{0   , 0.5 , 0}
+\definecolor{redstrings}   {rgb}{0.9 , 0,    0}
+\definecolor{dark0hard}{HTML}{1d2021}
+\definecolor{dark0}{HTML}{282828}  % Fg0
+\definecolor{dark0soft}{HTML}{32302f}  % FG soft
+\definecolor{dark1}{HTML}{3c3836}
+\definecolor{dark2}{HTML}{504945}
+\definecolor{dark3}{HTML}{665c54}
+\definecolor{dark4}{HTML}{7c6f64}
+\definecolor{dark4256}{HTML}{7c6f64}
+\definecolor{gray245}{HTML}{928374}
+\definecolor{gray244}{HTML}{928374}
+\definecolor{light0hard}{HTML}{f9f5d7}
+\definecolor{light0}{HTML}{fbf1c7}   % BG
+\definecolor{light0soft}{HTML}{f2e5bc}
+\definecolor{light1}{HTML}{ebdbb2}
+\definecolor{light2}{HTML}{d5c4a1}
+\definecolor{light3}{HTML}{bdae93}
+\definecolor{light4}{HTML}{a89984}
+\definecolor{light4256}{HTML}{a89984}
+\definecolor{brightred}{HTML}{fb4934}
+\definecolor{brightgreen}{HTML}{b8bb26}
+\definecolor{brightyellow}{HTML}{fabd2f}
+\definecolor{brightblue}{HTML}{83a598}
+\definecolor{brightpurple}{HTML}{d3869b}
+\definecolor{brightaqua}{HTML}{8ec07c}
+\definecolor{brightorange}{HTML}{fe8019}
+\definecolor{neutralred}{HTML}{cc241d}
+\definecolor{neutralgreen}{HTML}{98971a}
+\definecolor{neutralyellow}{HTML}{d79921}
+\definecolor{neutralblue}{HTML}{458588}
+\definecolor{neutralpurple}{HTML}{b16286}
+\definecolor{neutralaqua}{HTML}{689d6a}
+\definecolor{neutralorange}{HTML}{d65d0e}
+\definecolor{fadedred}{HTML}{9d0006}
+\definecolor{fadedgreen}{HTML}{79740e}
+\definecolor{fadedyellow}{HTML}{b57614}
+\definecolor{fadedblue}{HTML}{076678}
+\definecolor{fadedpurple}{HTML}{8f3f71}
+\definecolor{fadedaqua}{HTML}{427b58}
+\definecolor{fadedorange}{HTML}{af3a03}
+
+\definecolorstyle{tin} {
+\definecolor{colorOne}{named}{fadedblue}
+\definecolor{colorTwo}{named}{fadedyellow}
+\definecolor{colorThree}{named}{fadedgreen}
+}{
+% Background Colors
+\colorlet{backgroundcolor}{light0}
+\colorlet{framecolor}{dark0}
+% Title Colors
+\colorlet{titlefgcolor}{dark0}
+\colorlet{titlebgcolor}{light0}
+% Block Colors
+\colorlet{blocktitlebgcolor}{colorThree}
+\colorlet{blocktitlefgcolor}{dark0}
+\colorlet{blockbodybgcolor}{light0}
+\colorlet{blockbodyfgcolor}{dark0}
+% Innerblock Colors
+\colorlet{innerblocktitlebgcolor}{light0}
+\colorlet{innerblocktitlefgcolor}{dark0}
+\colorlet{innerblockbodybgcolor}{colorThree!30!light0}
+\colorlet{innerblockbodyfgcolor}{dark0}
+% Note colors
+\colorlet{notefgcolor}{dark0}
+\colorlet{notebgcolor}{colorTwo!50!light0}
+\colorlet{noteframecolor}{colorTwo}
+}
+\usecolorstyle{tin}
+
+% Tikzposter
+\defineblockstyle{tin}{
+    titlewidthscale=1, bodywidthscale=1, titleleft,
+    titleoffsetx=0pt, titleoffsety=0pt, bodyoffsetx=0pt, bodyoffsety=1mm,
+    bodyverticalshift=0pt, roundedcorners=0, linewidth=2mm,
+    titleinnersep=2mm, bodyinnersep=2mm
+}{
+}
+\defineinnerblockstyle{tin}{
+    titlewidthscale=1, bodywidthscale=1, titleleft,
+    titleoffsetx=0pt, titleoffsety=0pt, bodyoffsetx=0pt, bodyoffsety=1mm,
+    bodyverticalshift=0pt, roundedcorners=0, linewidth=2mm,
+    titleinnersep=2mm, bodyinnersep=2mm
+}{
+}
+
+\definelayouttheme{tin}{
+    \usecolorstyle{tin}
+    \usebackgroundstyle{Default}
+    \usetitlestyle{Default}
+    \useblockstyle{tin}
+    \useinnerblockstyle{tin}
+    \usenotestyle{Default}
+}
+
+\usetheme{tin}
+
+% Color color
+\usepackage{listings}
+\lstset{
+  basicstyle        = \ttfamily,
+  language          = bash,
+  showspaces        = false,
+  showtabs          = false,
+  breaklines        = true,
+  showstringspaces  = false,
+  breakatwhitespace = true,
+  escapeinside      = {(*@}{@*)},
+  commentstyle      = \color{fadedgreen},
+  keywordstyle      = \color{fadedblue}\bfseries,
+  stringstyle       = \color{fadedred},
+  basicstyle        = \ttfamily,
+}
+
+% Metadata
+\title{Bash Programming}
+\author{Martin Tourneboeuf}
+\date{\today}
+\institute{ALMA}
+% TODO logo upper right
+%\titlegraphic{\includegraphics[width=0.06\textwidth]{../res/alma.png}}
+
+
+
+\begin{filecontents*}[overwrite]{shbang.sh}
+#!/usr/bin/env bash
+print_hello_wold(){
+  echo "Hello, world!"
+}
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && print_hello_world "$@"
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{2.sh}
+# List command in scope with "corr" in their name
+compgen -c | grep -i corr
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{3.sh}
+# Print PATH environment variable, one folder per line (instead of ':')
+echo "${PATH//:/$'\n'}"
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{grammar.sh}
+echo "1 2" 3 | { cat -; help; }
+for i in "1 2" 3; do echo "$i" | cat -; done
+
+if :; then :; elif :; then :; else :; fi
+
+for name [ [ in [ word ... ] ] ; ] do list ; done  # while list-1; do list-2; done
+if list; then list; [ elif list; then list; ] ... [ else list; ] fi
+
+for (( expr1 ; expr2 ; expr3 )) ; do list ; done
+select name [ in word ] ; do list ; done
+case word in [ [(] pattern [ | pattern ] ... ) list ;; ] ... esac
+until list-1; do list-2; done
+# word
+# expression
+# command
+# list
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{condition.sh}
+if (( 1 > 1)); then
+  echo true
+elif (( 1 >= 1)); then
+  echo almost
+else 
+  echo false
+fi
+
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{loop.sh}
+for a in {1..15}; do
+  for (( b=1; b<=15; b=b+1 )); do
+    ((b >=a || b == 1)) && { printf "%4d" $((a*b)); } || { printf "    "; }
+    continue || break  # here, break is never executed
+  done; echo 
+done
+
+while :; do echo $((i++)); done  # Press Ctrl-C to stop
+\end{filecontents*}
+
+% =========================================================
+% 0/ START
+\begin{document}
+\maketitle
+\centering
+
+\begin{columns}
+\column{0.33}
+% =========================================================
+% A/ Syntax
+
+\block{Grammar}{
+  \innerblock{Grammar}{ \lstinputlisting{grammar.sh} }
+  \innerblock{Loop}{ \lstinputlisting{loop.sh} }
+  \innerblock{Contition}{ \lstinputlisting{condition.sh} }
+}
+
+
+
+% =========================================================
+% B/ Line
+\column{0.33}
+
+\block{Line}{
+\innerblock{Shbang}{ \lstinputlisting{shbang.sh} }
+\innerblock{Shbang}{ \lstinputlisting{shbang.sh} }
+\lstinputlisting{2.sh}
+\lstinputlisting{3.sh}
+}
+
+\block{Function}{
+  functions content here
+}
+% =========================================================
+% C/ Functions
+\column{0.33}
+\block{Advanced}{
+  pipe tricks
+}
+
+\end{columns}
+% =========================================================
+% D/ Advanced
+\block{Acknowledgements}{
+Lorem ipsum dolor sit amet, probo dolorem cu vis. Cu mei audire fabulas scriptorem, cu has clita fabulas. Sea id veritus maiorum indoctum, mea cu assum cetero. Ei posse movet maluisset vim.
+}
+
+\block{Links}{
+Lorem ipsum dolor sit amet, probo dolorem cu vis. Cu mei audire fabulas scriptorem, cu has clita fabulas. Sea id veritus maiorum indoctum, mea cu assum cetero. Ei posse movet maluisset vim.
+}
+
+\end{document}
