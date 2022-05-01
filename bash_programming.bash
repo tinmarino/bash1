@@ -263,7 +263,7 @@
     # Stack tracing
     print_stack(){
       : 'Print current stack trace to stderr'
-      local i
+      local i=0
       local fstg="%1s/ %20s %20s %20s\n"
       >&2 printf "$fstg" "" Function File Line
       for i in "${!FUNCNAME[@]}"; do

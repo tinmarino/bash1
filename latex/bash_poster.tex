@@ -3,6 +3,7 @@
 %\geometry{paperwidth=46.8in,paperheight=33.1in} % A0 = 1189 x 841 = 46.8 x 33.1
 \usepackage[utf8]{inputenc}
 
+
 % Beamer of stockholm
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -12,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage{adjustbox}
 \usepackage{enumitem}
+\setlist{nosep}
 \usepackage[backend=biber,style=numeric]{biblatex}
 
 % Gruvbox: https://github.com/morhetz/gruvbox
@@ -131,11 +133,13 @@
   basicstyle        = \ttfamily,
 }
 
+\usepackage{hyperref}
+
 % Metadata
 \title{Bash Programming}
-\author{Martin Tourneboeuf}
-\date{\today}
-\institute{ALMA}
+%\author{Martin Tourneboeuf}
+%\date{\today}
+%\institute{ALMA}
 % TODO logo upper right
 %\titlegraphic{\includegraphics[width=0.06\textwidth]{../res/alma.png}}
 
@@ -146,7 +150,7 @@
 print_hello_wold(){
   echo "Hello, world!"
 }
-[[ "${BASH_SOURCE[0]}" == "${0}" ]] && print_hello_world "$@"
+[[ "${BASH_SOURCE[0]}" == "$0" ]] && print_hello_world "$@"
 \end{filecontents*}
 
 \begin{filecontents*}[overwrite]{2.sh}
@@ -159,45 +163,52 @@ compgen -c | grep -i corr
 echo "${PATH//:/$'\n'}"
 \end{filecontents*}
 
+\begin{filecontents*}[overwrite]{variable.sh}
+declare    string="a b"; echo "$string"
+declare -i int=21; echo "$(( int * 2 ))"
+declare -a array=(a "b c"); for string in "${array[@]}"; do echo "$string"; done
+declare -A dict=([a]="b c" ["d e"]=f); for key in "${!dict[@]}"; do echo "$key: ${dict[$key]}"; done
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{function.sh}
+func(){
+  for i; do echo "$((j++)): $i|"; done
+}
+
+func a "b c"
+\end{filecontents*}
+
 \begin{filecontents*}[overwrite]{grammar.sh}
 echo "1 2" 3 | { cat -; help; }
 for i in "1 2" 3; do echo "$i" | cat -; done
 
-if :; then :; elif :; then :; else :; fi
 
-for name [ [ in [ word ... ] ] ; ] do list ; done  # while list-1; do list-2; done
-if list; then list; [ elif list; then list; ] ... [ else list; ] fi
 
-for (( expr1 ; expr2 ; expr3 )) ; do list ; done
 select name [ in word ] ; do list ; done
 case word in [ [(] pattern [ | pattern ] ... ) list ;; ] ... esac
 until list-1; do list-2; done
-# word
-# expression
-# command
-# list
+# word < expression < command < list
 \end{filecontents*}
 
 \begin{filecontents*}[overwrite]{condition.sh}
-if (( 1 > 1)); then
-  echo true
-elif (( 1 >= 1)); then
-  echo almost
-else 
-  echo false
+if true; then
+  echo as simple as that
+fi
+
+if (( 1 > 1)); then echo no
+elif [[ "$a" == toto ]]; then echo no
+elif true; then echo yes
+else echo no
 fi
 
 \end{filecontents*}
 
 \begin{filecontents*}[overwrite]{loop.sh}
-for a in {1..15}; do
-  for (( b=1; b<=15; b=b+1 )); do
-    ((b >=a || b == 1)) && { printf "%4d" $((a*b)); } || { printf "    "; }
-    continue || break  # here, break is never executed
-  done; echo 
+for string in a "b c"; do
+  echo "$string"
 done
 
-while :; do echo $((i++)); done  # Press Ctrl-C to stop
+while :; do echo "$((i++))"; done
 \end{filecontents*}
 
 % =========================================================
@@ -206,49 +217,78 @@ while :; do echo $((i++)); done  # Press Ctrl-C to stop
 \maketitle
 \centering
 
-\begin{columns}
-\column{0.33}
 % =========================================================
 % A/ Syntax
+\begin{columns}
 
-\block{Grammar}{
-  \innerblock{Grammar}{ \lstinputlisting{grammar.sh} }
-  \innerblock{Loop}{ \lstinputlisting{loop.sh} }
-  \innerblock{Contition}{ \lstinputlisting{condition.sh} }
+\column{0.33}
+\block{Variable}{
+  \lstinputlisting{variable.sh}
+  {\small
+  \setitemize[0]{leftmargin=*,parsep=0pt,itemsep=-20pt}
+  \begin{itemize}
+  
+  \item \textbf{declare} is optional but adviced to enforce type.\\
+  \item It can be replaced by \textbf{local} to limit its scope to the current function
+
+  \end{itemize}
+  }
+}
+\block{Function}{
+  \lstinputlisting{function.sh}
 }
 
+\column{0.33}
+\block{Loop}{
+  \lstinputlisting{loop.sh}
+  {\small
+  for name [ [ in [ word ... ] ] ; ] do list ; done  \# while list-1; do list-2; done\\
+  for (( expr1 ; expr2 ; expr3 )) ; do list ; done
+  }
+}
 
+\column{0.33}
+\block{Contition}{
+  \lstinputlisting{condition.sh}
+  {\small if list; then list; [ elif list; then list; ] \ldots [ else list; ] fi}
+}
+\end{columns}
+\block{Grammar}{ \lstinputlisting{grammar.sh} }
 
 % =========================================================
 % B/ Line
-\column{0.33}
 
 \block{Line}{
-\innerblock{Shbang}{ \lstinputlisting{shbang.sh} }
-\innerblock{Shbang}{ \lstinputlisting{shbang.sh} }
 \lstinputlisting{2.sh}
 \lstinputlisting{3.sh}
 }
 
-\block{Function}{
-  functions content here
-}
 % =========================================================
 % C/ Functions
-\column{0.33}
-\block{Advanced}{
-  pipe tricks
+\block{Function}{
+  functions content here
+  \begin{columns}
+  \end{columns}
 }
 
-\end{columns}
+
 % =========================================================
 % D/ Advanced
-\block{Acknowledgements}{
-Lorem ipsum dolor sit amet, probo dolorem cu vis. Cu mei audire fabulas scriptorem, cu has clita fabulas. Sea id veritus maiorum indoctum, mea cu assum cetero. Ei posse movet maluisset vim.
+\block{Advanced}{
+  \innerblock{Shbang}{ \lstinputlisting{shbang.sh} }
 }
 
+
+% =========================================================
+% D/ Links
 \block{Links}{
-Lorem ipsum dolor sit amet, probo dolorem cu vis. Cu mei audire fabulas scriptorem, cu has clita fabulas. Sea id veritus maiorum indoctum, mea cu assum cetero. Ei posse movet maluisset vim.
+\begin{itemize}
+
+\item \url{https://github.com/dylanaraps/pure-bash-bible}
+\item \url{https://tldp.org/LDP/abs/abs-guide.pdf}
+\item \url{git://git.savannah.gnu.org/bash.git}
+
+\end{itemize}
 }
 
 \end{document}
