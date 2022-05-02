@@ -7,6 +7,11 @@
 * $IFS
 * curl https://raw.githubusercontent.com/tinmarino/bash1/master/bask_programming.bash
 
+# Poster
+
+* help and man bash, man ascii
+* Redirection, get a nice table which breaks a containts the layout with also substitution
+
 # Trick from net
 gcc -xc -E -v -
 

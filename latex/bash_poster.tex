@@ -131,6 +131,7 @@
   keywordstyle      = \color{fadedblue}\bfseries,
   stringstyle       = \color{fadedred},
   basicstyle        = \ttfamily,
+  escapechar        = {`}
 }
 
 \usepackage{hyperref}
@@ -147,27 +148,37 @@
 
 \begin{filecontents*}[overwrite]{shbang.sh}
 #!/usr/bin/env bash
-print_hello_wold(){
-  echo "Hello, world!"
-}
+print_hello_wold(){ echo "Hello, world!"; }
 [[ "${BASH_SOURCE[0]}" == "$0" ]] && print_hello_world "$@"
 \end{filecontents*}
 
-\begin{filecontents*}[overwrite]{2.sh}
-# List command in scope with "corr" in their name
+\begin{filecontents*}[overwrite]{small_compgen.sh}
+`\small{\# List command in scope with "corr" in their name}`
 compgen -c | grep -i corr
 \end{filecontents*}
 
-\begin{filecontents*}[overwrite]{3.sh}
-# Print PATH environment variable, one folder per line (instead of ':')
+\begin{filecontents*}[overwrite]{small_path.sh}
+`\small{\# Print line separated PATH variable}`
 echo "${PATH//:/$'\n'}"
 \end{filecontents*}
 
+\begin{filecontents*}[overwrite]{small_slurp.sh}
+`\small{\# Slurp: file -> string}`
+string=$(< file.txt )
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{small.sh}
+# TODO fill others
+cmd <<< "string"  # Redirect a single line of text to the stdin ofcmd. This is called a here-string.
+cmd1 | cmd2 | cmd3 | cmd; echo ${PIPESTATUS[@]}  # Find out the exit codes of all piped commands.
+cmd <(cmd1) <(cmd2)  # Redirect stdout ofarguments tocmd. cmd1andcmd2to two anonymous fifos, then pass both fifos as
+\end{filecontents*}
+
 \begin{filecontents*}[overwrite]{variable.sh}
-declare    string="a b"; echo "$string"
-declare -i int=21; echo "$(( int * 2 ))"
-declare -a array=(a "b c"); for string in "${array[@]}"; do echo "$string"; done
-declare -A dict=([a]="b c" ["d e"]=f); for key in "${!dict[@]}"; do echo "$key: ${dict[$key]}"; done
+declare    `\color{dark0}\LARGE{string}`="a b"; echo "$string"
+declare -i `\color{dark0}\LARGE{int}`=21; echo "$(( int * 2 ))"
+declare -a `\color{dark0}\LARGE{array}`=(a "b c"); for string in "${array[@]}"; do echo "$string"; done
+declare -A `\color{dark0}\LARGE{dict}`=([a]="b c" ["d e"]=f); for key in "${!dict[@]}"; do echo "$key: ${dict[$key]}"; done
 \end{filecontents*}
 
 \begin{filecontents*}[overwrite]{function.sh}
@@ -211,6 +222,66 @@ done
 while :; do echo "$((i++))"; done
 \end{filecontents*}
 
+\begin{filecontents*}[overwrite]{case.sh}
+parse_argument(){ while [[ "$#" -gt 0 ]]; do
+case $1 in
+  --ant) antenna=$2; shift ;;
+  -v) verbose=1; ;;
+  *) echo unknown argument; ;;
+esac
+shift; done; echo "antenna:$antenna, verbose:$verbose"; }
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_fork.sh}
+exec &> >(tee -a log.out)
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_fork_end.sh}
+exec &> /dev/tty
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_open.sh}
+exec 3<> filename
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_close.sh}
+exec 3>&-
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_copy.sh}
+exec 4>&3
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_write.sh}
+echo "foo" >&3
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{redir_read.sh}
+cat <&3
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{fork_pipe.sh}
+shopt -s lastpipe; set +m  # permit last pipe command to execute in current shell; disable Monitor mode (i.e. job control)
+{ echo -e "begin\ngrepme\nend" | tee /dev/fd/3 | sed -n '/grepme/p' | readarray -t a_filter; } 3>&1; echo "${a_filter[*]}"
+\end{filecontents*}
+
+\begin{filecontents*}[overwrite]{fork_join.sh}
+for i in {0..9}; do ((i_fd=i+100))
+   "exec $i_fd< <(echo message \"$i_fd\")"
+done  `\small{\# Fork 10 subprocess}`
+
+for i in {0..9}; do ((i_fd=i+100))
+  a_out[$i]=$(cat <&"$i_fd")
+done  `\small{\# Join and collect output}`
+
+IFS=$'\n' echo "${a_out[*]}"  `\small{\# Print all outputs}`
+\end{filecontents*}
+
+
+% Last minute config
+\setitemize[0]{leftmargin=*,parsep=0pt,itemsep=-20pt}
+\newcommand{\mytitle}[1]{ \block{ #1 \rule{\textwidth}{0.4pt} } }
+
 % =========================================================
 % 0/ START
 \begin{document}
@@ -219,13 +290,15 @@ while :; do echo "$((i++))"; done
 
 % =========================================================
 % A/ Syntax
+\mytitle{ Grammar }
+
 \begin{columns}
 
+% A.1 Variable
 \column{0.33}
 \block{Variable}{
   \lstinputlisting{variable.sh}
   {\small
-  \setitemize[0]{leftmargin=*,parsep=0pt,itemsep=-20pt}
   \begin{itemize}
   
   \item \textbf{declare} is optional but adviced to enforce type.\\
@@ -238,49 +311,97 @@ while :; do echo "$((i++))"; done
   \lstinputlisting{function.sh}
 }
 
+% A.2 Condition
+\column{0.33}
+\block{Contition}{
+  \lstinputlisting{condition.sh}
+}
+\block{Case}{
+  \lstinputlisting{case.sh}
+}
+
+% A.3 Loop
 \column{0.33}
 \block{Loop}{
   \lstinputlisting{loop.sh}
   {\small
-  for name [ [ in [ word ... ] ] ; ] do list ; done  \# while list-1; do list-2; done\\
-  for (( expr1 ; expr2 ; expr3 )) ; do list ; done
   }
 }
 
-\column{0.33}
-\block{Contition}{
-  \lstinputlisting{condition.sh}
-  {\small if list; then list; [ elif list; then list; ] \ldots [ else list; ] fi}
-}
 \end{columns}
-\block{Grammar}{ \lstinputlisting{grammar.sh} }
 
 % =========================================================
 % B/ Line
+\mytitle{ Line }
 
+\begin{columns}
+
+% A.1 Variable
+\column{0.25}
 \block{Line}{
-\lstinputlisting{2.sh}
-\lstinputlisting{3.sh}
+  \lstinputlisting{small_compgen.sh}
+  \lstinputlisting{small_path.sh}
+  \lstinputlisting{small_slurp.sh}
 }
 
-% =========================================================
-% C/ Functions
-\block{Function}{
-  functions content here
-  \begin{columns}
-  \end{columns}
+\column{0.50}
+\block{}{
+\begin{center}
+\begin{tabular}{ |l|l|l|l| }
+\textbf{Redirection}  & & \textbf{Substitution} & \\
+\hline
+\lstinputlisting{redir_fork.sh} & \small{Redirect stdout and stderr to file }
+  & cell3 & cell4 \\
+\lstinputlisting{redir_fork_end.sh} & \small{Reset stdout and stderr }
+  & cell6 & cell7 \\
+\lstinputlisting{redir_open.sh} & \small{Open FD}
+  & cell6 & cell7 \\
+\lstinputlisting{redir_close.sh} & \small{Close FD}
+  & cell6 & cell7 \\
+\lstinputlisting{redir_copy.sh} & \small{Copy FD 3 to 4}
+  & cell6 & cell7 \\
+\lstinputlisting{redir_write.sh} & \small{Write to FD}
+  & cell6 & cell7 \\
+\lstinputlisting{redir_read.sh} & \small{Read from FD}
+  & cell6 & cell7 \\
+\hline
+\end{tabular}
+\end{center}
 }
 
+\column{0.50}
+\block{Fork a pipe}{
+  \lstinputlisting{fork_pipe.sh}
+}
+\end{columns}
+
+\block{Fork a pipe}{
+  \lstinputlisting{fork_pipe.sh}
+}
 
 % =========================================================
 % D/ Advanced
-\block{Advanced}{
-  \innerblock{Shbang}{ \lstinputlisting{shbang.sh} }
+\mytitle{Advanced}{
 }
 
+\begin{columns}
+
+% D.1 Large
+\column{0.70}
+\block{Hi}{
+  \lstinputlisting{shbang.sh}
+}
+\block{Fork Join Processes}{
+  \lstinputlisting{fork_join.sh}
+}
+
+% D.2 Small
+\column{0.30}
+
+\end{columns}
 
 % =========================================================
-% D/ Links
+% E/ Links
 \block{Links}{
 \begin{itemize}
 
