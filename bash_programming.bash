@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
+  # shellcheck disable=SC2016  # Expressions don't expand in single quotes, use double quotes for that
+  # shellcheck disable=SC2046  # Quote this to prevent word splitting
+  # shellcheck disable=SC2291  # Quote repeated spaces to avoid them collapsing into one
 
 # +/ Introduction
-  : '
-  TOC:
+  wiki 'BaSh Programming Table of Content
     -/ Introduction
     A/ Bash Shelling
     ----------------
@@ -26,14 +28,14 @@
   a1_token_and_space(){
     : 'Parenthesis or Comma -> Space
 
-    "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
     ```
+    "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
     A simple command  is  a sequence of optional variable assignments followed by blank-separated words and redirections, and terminated by a control operator
     ```
     Note the blank-separated
 
-    "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter
     ```
+    ts "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter zz
     A variable may be assigned to by a statement of the form
     
            name=[value]
@@ -81,7 +83,7 @@
   }
 
   a2_interpolation_and_quote(){
-    : 'Interpolation: get variable values or command stdout
+    wiki 'Interpolation: get variable values or command stdout
     Looks like macros in C
 
     | Token      | Substitution |
@@ -90,11 +92,8 @@
     | $( ... )   | Command      |
     | $(( ... )) | Arithmetic   |
     
-    "man bash" Enter "/^EXPANSION" Enter
-    man bash / SIMPLE COMMAND EXPANSION
-
-    A2: Quote to prevent word expansion (except array)
-    Do not quote if you want word expansion  (except array)
+    `"man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter`
+    "man bash" / SIMPLE COMMAND EXPANSION
 
     man bash / QUOTING
     man bash / EXPANSION / Quote Removal
@@ -104,20 +103,20 @@
     TODO quote removal 
     '
 
-    # shellcheck disable=SC2046,SC2291
-    var=value; echo -e ''\
-      -/ -----------------------------\\n\
-      1/ Brace: {here,there}{_my,_your}{_poney,_house} \\n\
-      2/ Tilde: ~ \\n\
-      3/ Parameter: $var is ${var//va/b} \\n\
-      4/ Command: $(printf "%s " {1..10}) \\n\
-      5/ Arithmetic: $(( 90 * 2 / 3 - 18)) \\n\
-      6/ Process: <(echo toto) \\n\
-      7/ Word spliting: many     whitespaces \\n\
-      8/ Pathname Expansion: ./* \\n\
-      9/ Quote Removal '' 'many     whitespaces' \\n\
-      -/ -----------------------------
-
+    # Interpolation reference
+    var=value; echo -e \
+      \\n\
+      -/ ----------------------------------------------------------\\n\
+      1/ Brace Expansion'      ': {here,there}{_my,_your}{_poney,_house} \\n\
+      2/ Tilde Expansion'      ': ~ \\n\
+      3/ Parameter Expansion'  ': $var is ${var//va/b} \\n\
+      4/ Command Substitution' ': $(printf "%s " {1..10}) \\n\
+      5/ Arithmetic Expansion' ': $(( 90 * 2 / 3 - 18)) \\n\
+      6/ Process Substitution' ': <(echo toto) \\n\
+      7/ Word spliting'        ': many     whitespaces	tab and newlines\\n\
+      8/ Pathname Expansion'   ': * \\n\
+      9/ Quote Removal'        ': '' 'many     whitespaces' \\n\
+      -/ ----------------------------------------------------------\\n
 
 
     # Multiple spaces
@@ -146,6 +145,12 @@
     # Fix: gs_root_path=$(readlink -f "$file")
     # Fix: gs_root_path=$(dirname "$gs_root_path")
     # Fix: echo "$gs_root_path"/script/lib_alma.sh
+    : 'ToRemember
+    Quote to prevent word expansion (except array)
+    Do not quote if you want word expansion  (except array)
+    Quote can be nested as long as there is an interpolation in between
+    '
+
   }
 
   a3_context_and_array(){
@@ -312,7 +317,7 @@
 
 # C/ Bash Programming
   c1_life_cycle_and_workflow(){
-    : $'C1: Software development life cycle
+    : 'C1: Software development life cycle
 
     Do not reivent the wheel, or for educative purposes
     Make it easy
@@ -374,33 +379,34 @@
   }
 
   annexe2_Links(){
-    echo $'
-      * Book: [Advanced BaSh scripting Guide (ABS)](https://tldp.org/LDP/abs/abs-guide.pdf)
-        __The reference__
-        An in-depth exploration of the art of shell scripting
-        By Mendel Cooper
+    sed 'toto 
+     s/asda\s*sd/sdasda/g
+    '
+
+    wiki '
+      ## Books
+      * [ABS: Advanced Bash Scripting](https://tldp.org/LDP/abs/abs-guide.pdf)
+        * __The Bash reference__: An in-depth exploration of the art of shell scripting (by Mendel Cooper)
+      * [TLPI: The Linux Programming Interface](https://sciencesoftcode.files.wordpress.com/2018/12/the-linux-programming-interface-michael-kerrisk-1.pdf)
+        * __The Linux reference__: A Linux and UNIX System Programming Handbook  (by Michael Kerrisk)
+
+      ## Documentation
+      * [Object Oriented BaSh](https://stackoverflow.com/questions/36771080)
+      * [Style for BaSh (google)](https://google.github.io/styleguide/shellguide.html)
       
-      * Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
-        by William Shotts
-
-      * Book: [Pure BaSh Bible](https://github.com/dylanaraps/pure-bash-bible)
-
-      * Doc: [Google coding style for BaSh](https://google.github.io/styleguide/shellguide.html)
-      
-      * Post: [Object Oriented BaSh](https://stackoverflow.com/questions/36771080/creating-classes-and-objects-using-bash-scripting)
-      
-      * Program: [Jupyter BaSh kernel](https://github.com/takluyver/bash_kernel), and [jupyter-vim](https://github.com/jupyter-vim/jupyter-vim)
-      
-      * Code: [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
-
-      * Code: [bash git](git://git.savannah.gnu.org/bash.git)
-
-      * Code: [Unicode math operators](http://xahlee.info/comp/unicode_math_operators.html)
-
-      * Code: vim +"e \$VIMRUNTIME/syntax/sh.vim"
-
-      * Code: [Bison syntax declaration](https://github.com/bminor/bash/blob/bash-5.1/parse.y#L356-L372)
-
-      * Doc: https://programmingpraxis.files.wordpress.com/2012/09/primenumbers.pdf
+      ## Code
+      * [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
+      * [Bash Source code](git://git.savannah.gnu.org/bash.git)
+      * [Pure BaSh Bible](https://github.com/dylanaraps/pure-bash-bible)
+      * [Unicode math operators](http://xahlee.info/comp/unicode_math_operators.html)
+      * [Bash syntax declaration (Bison)](https://github.com/bminor/bash/blob/bash-5.1/parse.y#L356-L372)
+      * [Algorithm for prime number](https://programmingpraxis.files.wordpress.com/2012/09/primenumbers.pdf)
+      * vim +"e \$VIMRUNTIME/syntax/sh.vim"
     '
   }
+  
+  
+  
+  TODO to README
+      * Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
+        by William Shotts
