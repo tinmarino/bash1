@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # +/ Introduction
-  : $'
+  : '
   TOC:
     -/ Introduction
     A/ Bash Shelling
@@ -24,15 +24,15 @@
 
 # A/ Bash Shelling
   a1_token_and_space(){
-    : $'A1: Parenthesis or Comma -> Space
+    : 'Parenthesis or Comma -> Space
 
-    man bash / SHELL GRAMMAR
+    "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
     ```
     A simple command  is  a sequence of optional variable assignments followed by blank-separated words and redirections, and terminated by a control operator
     ```
     Note the blank-separated
 
-    man bash / PARAMETERS
+    "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter
     ```
     A variable may be assigned to by a statement of the form
     
@@ -41,23 +41,27 @@
     '
     
     # Asignment
+    # shellcheck disable=SC2283
     a = 42  # Err1
     # Fix: a=42
     # Rem: Spaces count
     # Rem: a = 42 ia:s command "a" recevings "=" and "42" as arguments
 
     # Arithmetic
+    # shellcheck disable=SC2100
     b=a+1  # Err2
     # Fix: b=$(( a + 1 ))
     # Rem: The __string__ context is the default context
     # Rem: The arithmetic context starts with "((" in command and $(( in expression
 
     # Concatenation
+    # shellcheck disable=SC2086
     c=a value is $a  # Err3
     # Fix: c="a value is $a"
     # Rem: Spaces count
 
     # Command invocation
+    # shellcheck disable=SC1073,SC1065
     #print(c)  # Err4  (commented for linter)
     # Fix: echo $c
     # Rem: Parenthesis previde array context (in asssignemt expression or subshell in command
@@ -69,21 +73,24 @@
     # Fix: done
     # Rem: Parenthesis | Comma -> Spaces
 
-    # TODO Conclusion, BaSh is a Shell languages, token separated with space, immediate are imediates <= string oriented, macro
-    : 'TODO ToRemember: 
+    : 'ToRemember: 
+    BaSh is a Shell languages
+    The koken separator is the white space
+    Imediate are imediates <= string oriented, macro
     '
   }
 
   a2_interpolation_and_quote(){
-    : $'A2: Interpolation: get variable values or command stdout
+    : 'Interpolation: get variable values or command stdout
     Looks like macros in C
 
     | Token      | Substitution |
     | ---        | ---          |
-    | ${ ... }   | Variable     |
+    | ${ ... }   | Paramter     |
     | $( ... )   | Command      |
+    | $(( ... )) | Arithmetic   |
     
-    man bash / EXPANSION
+    "man bash" Enter "/^EXPANSION" Enter
     man bash / SIMPLE COMMAND EXPANSION
 
     A2: Quote to prevent word expansion (except array)
@@ -97,8 +104,25 @@
     TODO quote removal 
     '
 
+    # shellcheck disable=SC2046,SC2291
+    var=value; echo -e ''\
+      -/ -----------------------------\\n\
+      1/ Brace: {here,there}{_my,_your}{_poney,_house} \\n\
+      2/ Tilde: ~ \\n\
+      3/ Parameter: $var is ${var//va/b} \\n\
+      4/ Command: $(printf "%s " {1..10}) \\n\
+      5/ Arithmetic: $(( 90 * 2 / 3 - 18)) \\n\
+      6/ Process: <(echo toto) \\n\
+      7/ Word spliting: many     whitespaces \\n\
+      8/ Pathname Expansion: ./* \\n\
+      9/ Quote Removal '' 'many     whitespaces' \\n\
+      -/ -----------------------------
+
+
+
     # Multiple spaces
     a="1   2   3   4   5"
+    # shellcheck disable=SC2086
     echo $a  # Err
     # Fix: echo "$a"
 
@@ -125,7 +149,7 @@
   }
 
   a3_context_and_array(){
-    : $'A3: Everithing is relative ... to the execution context
+    : 'A3: Everithing is relative ... to the execution context
     | Token      | Context      |
     | ---        | ---          |
     | [[ ... ]]  | String       |
