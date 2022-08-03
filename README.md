@@ -316,7 +316,10 @@ a='\#'; echo "${a@P}"  # Command number, after 4.4
 ```
 
 
-## Old or DONE
+# More link
+
+      * Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
+# DONE
 
 * Shbang
   * #!/usr/bin/env bash

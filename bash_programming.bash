@@ -4,7 +4,7 @@
   # shellcheck disable=SC2291  # Quote repeated spaces to avoid them collapsing into one
 
 # +/ Introduction
-  wiki 'BaSh Programming Table of Content
+  : 'BaSh Programming Table of Content
     -/ Introduction
     A/ Bash Shelling
     ----------------
@@ -41,7 +41,6 @@
            name=[value]
     ```
     '
-    
     # Asignment
     # shellcheck disable=SC2283
     a = 42  # Err1
@@ -83,7 +82,7 @@
   }
 
   a2_interpolation_and_quote(){
-    wiki 'Interpolation: get variable values or command stdout
+    : 'Interpolation: get variable values or command stdout
     Looks like macros in C
 
     | Token      | Substitution |
@@ -92,17 +91,15 @@
     | $( ... )   | Command      |
     | $(( ... )) | Arithmetic   |
     
-    `"man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter`
-    "man bash" / SIMPLE COMMAND EXPANSION
-
-    man bash / QUOTING
-    man bash / EXPANSION / Quote Removal
-
-    TODO basic interpolation
-    TODO nested quote 
-    TODO quote removal 
+    ```tmux
+    ts "man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter
+    ts "man bash" Enter "/^SIMPLE COMMAND EXPANSION" Enter
+    ts "man bash" Enter "/QUOTING" Enter
+    ts "man bash" /EXPANSION / Quote Removal
+    ```
     '
 
+    #
     # Interpolation reference
     var=value; echo -e \
       \\n\
@@ -135,6 +132,10 @@
     a=42
     b="$(echo "$(echo "$(( a - 42 + "$(echo 5)" ))")")"
     echo "$b"  # Output ?
+    
+    a=anything
+    [[ anything == '$a' ]] && echo Yes  # Err
+    # Fix: [[ anything == "$a" ]] && echo Yes
 
     # Nested command substitution 1
     file=${BASH_SOURCE[0]}
@@ -154,7 +155,7 @@
   }
 
   a3_context_and_array(){
-    : 'A3: Everithing is relative ... to the execution context
+    : 'Everithing is relative ... to the execution context
     | Token      | Context      |
     | ---        | ---          |
     | [[ ... ]]  | String       |
@@ -165,7 +166,7 @@
     | # ...      | Comment      |
 
     TODO  String and comment
-    man bash / SHELL GRAMMAR / Compound Commands
+    ts "man bash" Enter  "/^SHELL GRAMMAR" Enter "/Compound Commands" Enter zt
     '
 
     if 1==1; then echo Yes; fi  # Err
@@ -207,11 +208,7 @@
     # Fix: echo "Ret: $? (expect 1)"
     # Fix: echo "Out: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
 
-    a=anything
-    [[ anything == '$a' ]] && echo Yes  # Err
-    # Fix: [[ anything == "$a" ]] && echo Yes
-
-    : $'A3: Use "@" (not "*") and double quote it
+    : 'Use "@" (not "*") and double quote it
     Ex: a_names=(Ruben "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
     TODO
@@ -241,26 +238,31 @@
   
 # B/ Basic Scripting
   b1_function_and_scope(){
-    :
+    : '
+    '
+    
+    # Everything is global
+    var=1
+    fct(){ var=2; }  # Err
+    fct; echo "$var"
+    # Fix: fct(){ local -i var=2; }
+    
   }
 
   b2_introspection_and_builtin(){
-    : $'
-    man bash
-    help
-    compgen -b        # list builtins like help and compgen
+    : 'Where do I come from, where am I, where do I go
+    ts "man bash" Enter "/^SHELL BUILTIN COMMANDS" Enter zt z3
+    
+    TODO
     declare type      # real (user) introspection
-    caller trap       # stack tracing and debugging
-    set shopt ulimit uset
-                      # configuring
 
-    * Configuration
-    * Workflow
-    * TODO Roseta code
-
-    man bash / SHELL BUILTIN COMMANDS
     man bash / PARAMETERS / Shell Variables
     '
+    
+    # Hi
+    help
+    compgen -b        # List builtins like help and compgen
+    man bash
 
     # Display possible completions
     compgen -c | grep -i gui  # c like command
@@ -272,6 +274,7 @@
     # Rem: man bash / SHELL BUILTIN COMMAND / compgne / complete / action
 
     # Declare variables and give them attributes
+    # -- Or print what defined variable is in scope
     declare     # all
     help declare
     declare -i -p  # Integer
@@ -288,6 +291,14 @@
     # Code inspection
     toto(){ echo titi; }
     type toto
+    
+    # Variable inspection
+    unset a b c d
+    declare -i a=1
+    declare    b=value
+    declare -a c=(2 3)
+    declare -A d=([4]=5 [6]=7 [eight]=9 ['and 10']=11)
+    for s in a b c d; do declare -p "$s"; done
 
     # Stack tracing
     print_stack(){
@@ -304,6 +315,15 @@
     first
     # Rem: I prefer 
     # Rem: Loop index: Could use ${#arr[@]} like in for i in $(eval echo "{0..$((${#arr[@]}-1))}")
+    
+    # Also see
+    # caller trap       # stack tracing and debugging
+    # set shopt ulimit uset
+    
+    : 'ToRemember
+    type function
+    declare -p variable
+    '
   }
 
   b3_process_control_and_job(){
@@ -312,6 +332,102 @@
     * wait TODO
     TODO job control
     '
+    
+    #
+    # Define a worker function
+    worker(){
+      : 'Special 12 and 13'
+      local -i num=${1:-0} i=0
+      local -i color=$((num % 5 + 30))
+      if (( 12 == num )); then return 42; fi
+      if (( 13 == num )); then while :; do echo -e "worker \e[1m\e[${color}m$num\e[0m: working $((i++))."; sleep 1; done; return 0; fi
+      for i in {1..5}; do
+        echo -e "worker \e[1m\e[${color}m$num\e[0m: working $i/5."
+        sleep 0.1
+      done
+    }
+    worker 1
+    
+    # Fork like irresponsible parent
+    multiwork1(){
+      declare id=''
+      
+      echo -e "\nForking"
+      for id; do
+        worker "$id" &  # <----- Here is async
+      done
+      
+      echo -e "\nJoining"
+      wait
+      
+      echo -e "MultiWork1 Over"
+    }
+    multiwork1 {1..3}
+    
+    
+    # But a good parent, never abandon his children
+    # -- So he can know exit status, pending jobs and kill them
+    multiwork2(){
+      declare id=''
+      declare -gA d_pid=() d_ret=()
+      
+      echo -e "\nForking"
+      for id; do
+        worker "$id" &     # <----- Here is async
+        d_pid[$id]=$!
+        echo "PID of $id is ${d_pid[$id]}"
+      done
+      
+      echo -e "\nJoining"
+      for id; do
+        wait "${d_pid[$id]}"
+        d_ret[$id]=$?
+        echo "Returned id:$id status:${d_ret[$id]}"
+      done
+      
+      echo "Summary: ${d_pid[*]} | Ret: ${d_ret[*]}"
+      echo -e "MultiWork2 Over"
+    }
+    multiwork2 {1..3}
+    
+    
+    # But he can also get the exit status an stdout of each one
+    multiwork3(){
+      declare id=''
+      declare -gA d_pid=() d_ret=() d_out=()
+      declare -i i_fd=100
+      
+      echo -e "\nForking"
+      i_fd=100
+      for id; do
+        eval "exec $i_fd< <(worker \"$id\")"  # <----- Here is async
+        d_pid[$id]=$!
+        echo "PID of $id is ${d_pid[$id]}"
+        (( i_fd++ ))
+      done
+      
+      echo -e "\nJoining"
+      i_fd=100
+      for id; do
+        echo WAIT
+        wait "${d_pid[$id]}"; d_ret[$id]=$?  # Wait for status
+        echo REEAD
+        d_out[$id]=$(cat <&$i_fd)  # Wait for stdout
+        echo "Returned id:$id   status:${d_ret[$id]}   fd:$i_fd   stdout:${d_out[$id]//$'\n'/:}"
+        (( i_fd++ ))
+      done
+      
+      echo -e "\nClosing"
+      i_fd=100
+      for id; do
+        eval "exec $i_fd<&-"
+        (( i_fd++ ))
+      done
+      
+      echo "Summary: ${d_pid[*]} | Ret: ${d_ret[*]} | Out: ${d_out[*]//$'\n'/:}"
+      echo -e "MultiWork3 Over"
+    }
+    multiwork3 {1..3}
   }
 
 
@@ -383,18 +499,18 @@
      s/asda\s*sd/sdasda/g
     '
 
-    wiki '
-      ## Books
+    : '
+      # Books
       * [ABS: Advanced Bash Scripting](https://tldp.org/LDP/abs/abs-guide.pdf)
         * __The Bash reference__: An in-depth exploration of the art of shell scripting (by Mendel Cooper)
       * [TLPI: The Linux Programming Interface](https://sciencesoftcode.files.wordpress.com/2018/12/the-linux-programming-interface-michael-kerrisk-1.pdf)
         * __The Linux reference__: A Linux and UNIX System Programming Handbook  (by Michael Kerrisk)
 
-      ## Documentation
+      # Documentation
       * [Object Oriented BaSh](https://stackoverflow.com/questions/36771080)
       * [Style for BaSh (google)](https://google.github.io/styleguide/shellguide.html)
       
-      ## Code
+      # Code
       * [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
       * [Bash Source code](git://git.savannah.gnu.org/bash.git)
       * [Pure BaSh Bible](https://github.com/dylanaraps/pure-bash-bible)
@@ -404,9 +520,3 @@
       * vim +"e \$VIMRUNTIME/syntax/sh.vim"
     '
   }
-  
-  
-  
-  TODO to README
-      * Book: [The Linux Command Line (TLCL)](http://linuxclass.heinz.cmu.edu/doc/tlcl.pdf)
-        by William Shotts
