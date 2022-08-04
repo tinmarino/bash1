@@ -2,20 +2,11 @@
   # shellcheck disable=SC2016  # Expressions don't expand in single quotes, use double quotes for that
   # shellcheck disable=SC2046  # Quote this to prevent word splitting
   # shellcheck disable=SC2291  # Quote repeated spaces to avoid them collapsing into one
+  # shellcheck disable=SC2059  # Don't use variables in the printf format string
 
 # +/ Introduction
-  : 'BaSh Programming Table of Content
+  : 'BaSh, the Linux shell (GNU 1989)
     -/ Introduction
-    A/ Bash Shelling
-    ----------------
-      A.1/ Token and space
-      A.2/ Interpolation and quote
-      B.3/ Context and array
-    B/ Bash Scripting
-    -----------------
-      B.1/ Function and scope
-      B.2/ Introspection and builtins
-      B.3/ Process control and job
     C/ Bash Programming
     -------------------
       C.1/ Life cycle and workflow
@@ -82,8 +73,9 @@
   }
 
   a2_interpolation_and_quote(){
-    : 'Interpolation: get variable values or command stdout
-    Looks like macros in C
+    : 'Interpolation: store values, results in variables
+    Bash looks like a macro programming language.
+    Macro replacement is called substitution
 
     | Token      | Substitution |
     | ---        | ---          |
@@ -127,19 +119,23 @@
     b=$a
     b="${a} is fine"
     echo "$b"
+    # shellcheck disable=SC2097,SC2098
     b=$a echo "$b"  # Output ?
 
     a=42
+    # shellcheck disable=SC2116,SC2005
     b="$(echo "$(echo "$(( a - 42 + "$(echo 5)" ))")")"
     echo "$b"  # Output ?
     
     a=anything
+    # shellcheck disable=SC2050
     [[ anything == '$a' ]] && echo Yes  # Err
     # Fix: [[ anything == "$a" ]] && echo Yes
 
     # Nested command substitution 1
     file=${BASH_SOURCE[0]}
     file="/alma/ACS-2021NOV/CONTROL/avoid spaces in filenames.sh"
+    # shellcheck disable=SC2086
     echo "$(dirname "$(readlink -f $file)")/script/lib_alma.sh"  # Err
     # Fix: echo "$(dirname "$(readlink -f "$file")")/script/lib_alma.sh"
     # Fix: 
@@ -151,7 +147,6 @@
     Do not quote if you want word expansion  (except array)
     Quote can be nested as long as there is an interpolation in between
     '
-
   }
 
   a3_context_and_array(){
@@ -169,6 +164,7 @@
     ts "man bash" Enter  "/^SHELL GRAMMAR" Enter "/Compound Commands" Enter zt
     '
 
+    # shellcheck disable=SC2272
     if 1==1; then echo Yes; fi  # Err
     # Fix: if (( 1==1 )); then echo Yes; fi
     # Fix: if true; then echo Yes; fi
@@ -194,7 +190,10 @@
     # Fix: { a=10; }; [[ 10 == $a ]]; echo "$? <- $a"
 
     # Subshell
-    ( a=11; ); [[ 11 == $a ]] && echo Yes  # Err
+    # shellcheck disable=SC2030
+    ( a=11; )
+    # shellcheck disable=SC2053,SC2031
+    [[ 11 == $a ]] && echo Yes  # Err
     # Fix: ( a=11; [[ $a == 11 ]]; ); echo "$? (expect 0) <- $a"
     # Fix: a=42 res=42
     # Fix: (
@@ -221,8 +220,10 @@
     '
 
     print_args(){
+      # shellcheck disable=SC2068
       for s_arg in $@; do  # Err1
-        echo $((++cnt))/ $s  # Err2
+        # shellcheck disable=SC2086
+        echo $((++cnt))/ $s_arg  # Err2
       done
     }
     # Fix: args(){
@@ -238,7 +239,7 @@
   
 # B/ Basic Scripting
   b1_function_and_scope(){
-    : '
+    : 'All code in function, take care of positional arguments
     '
     
     # Everything is global
@@ -246,7 +247,6 @@
     fct(){ var=2; }  # Err
     fct; echo "$var"
     # Fix: fct(){ local -i var=2; }
-    
   }
 
   b2_introspection_and_builtin(){
@@ -296,7 +296,9 @@
     unset a b c d
     declare -i a=1
     declare    b=value
+    # shellcheck disable=SC2034
     declare -a c=(2 3)
+    # shellcheck disable=SC2034
     declare -A d=([4]=5 [6]=7 [eight]=9 ['and 10']=11)
     for s in a b c d; do declare -p "$s"; done
 
@@ -321,19 +323,17 @@
     # set shopt ulimit uset
     
     : 'ToRemember
-    type function
-    declare -p variable
+    type fct  # fct(){ :; }
+    declare -p var   # var=value
     '
   }
 
   b3_process_control_and_job(){
     : '
-    * jobs TODO
-    * wait TODO
-    TODO job control
+    * [SO: subcmd wait and return](https://stackoverflow.com/questions/356100)
+    * [SO: subcmd capture stdout](https://stackoverflow.com/questions/20017805)
     '
     
-    #
     # Define a worker function
     worker(){
       : 'Special 12 and 13'
@@ -367,6 +367,7 @@
     
     # But a good parent, never abandon his children
     # -- So he can know exit status, pending jobs and kill them
+    # -- Note that jobs -l (list) or jobs -p (pid) is also printing the PID
     multiwork2(){
       declare id=''
       declare -gA d_pid=() d_ret=()
@@ -428,6 +429,23 @@
       echo -e "MultiWork3 Over"
     }
     multiwork3 {1..3}
+    
+    
+    # Use file descriptor
+    : > /tmp/file       # Chonk hard file
+    exec 3<> /tmp/file  # Open fd 3
+    echo value >&3      # Write to fd 
+    cat <&3             # Read from fd 3
+    exec 3>&- #close fd 3.
+    
+    
+    # G generic tip: you can just catch the output of subcommands
+    # From: https://stackoverflow.com/a/16292136/2544873
+    exec 3>&1
+    # out1=$(worker 1 | tee /dev/fd/3)
+    out2=$(worker 2 | tee >(cat - >&3))
+    exec 3>&-
+    echo "$out2"
   }
 
 
@@ -454,16 +472,17 @@
       * External context not leaking
     6. Create a non-regression script
     7. Optimise => Goto 3/
-
-    TODO reference
+    
+    # Tips
+    1. Use clauses (early returns)
+    2. Decrease complexity and indentation level
+    TODO Demo: A basic parser, and calculator
     '
 
     awk 'awk code TOREM 
     /asdasd/ {exit }
     '
 
-    TODO Early return to decrease mental stack
-    TODO Demo: A basic parser, and calculator
   }
 
   c2_binary_and_library(){
@@ -477,17 +496,23 @@
 
 # +/ Annex
   annexe1_busybox_commands(){
-    : '
+    : 'BusyBox - The Swiss Army Knife of Embedded Linux
     '
     a_cmd=(
-      sed  # Big dady
-      xargs  # Piper champion
-      grep  # -> ripgrep
-      rev  # To reverse characters (columns) of each line
-      tac  # To reverse lines
-      cut  # -d" " (delimiter) -f2-9 (from 2 to 9)
-      date   #
-      strace
+      sed    # Big dady
+      # Pipe
+      tee    # Duplicate stream
+      xargs  # Run command for each parameter
+      grep   # Regex filter (better use ripgrep)
+      rev    # Reverse columns (characters)
+      tac    # Reverse lines
+      cut    # Fast column filter -d" " (delimiter) -f2-9 (from 2 to 9)
+      # Operation
+      timeout  # Run command with a timeout
+      date   # Time operation
+      bc     # Math operation
+      nc     # Network operation (HTTP)
+      strace # Kernel operations
     )
     for s_cmd in "${a_cmd[@]}"; do
       apropos -l "^$s_cmd$"
@@ -495,11 +520,18 @@
   }
 
   annexe2_Links(){
-    sed 'toto 
+    sed '
      s/asda\s*sd/sdasda/g
     '
-
+    
     : '
+      # Program
+      * [Shellcheck](https://github.com/koalaman/shellchec)
+      * [Vim / ALE](https://github.com/dense-analysis/ale)
+      * [Vim / Slime](https://github.com/jpalardy/vim-slime)
+      * [Tmux](https://github.com/tmux/tmux)
+      * [Dotfiles (my)](https://github.com/tinmarino/vimfiles/tree/master/dotfile)
+      
       # Books
       * [ABS: Advanced Bash Scripting](https://tldp.org/LDP/abs/abs-guide.pdf)
         * __The Bash reference__: An in-depth exploration of the art of shell scripting (by Mendel Cooper)
