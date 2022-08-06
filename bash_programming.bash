@@ -28,7 +28,7 @@
     ```
     ts "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter zz
     A variable may be assigned to by a statement of the form
-    
+
            name=[value]
     ```
     '
@@ -65,7 +65,7 @@
     # Fix: done
     # Rem: Parenthesis | Comma -> Spaces
 
-    : 'ToRemember: 
+    : 'ToRemember:
     BaSh is a Shell languages
     The koken separator is the white space
     Imediate are imediates <= string oriented, macro
@@ -82,7 +82,7 @@
     | ${ ... }   | Paramter     |
     | $( ... )   | Command      |
     | $(( ... )) | Arithmetic   |
-    
+
     ```tmux
     ts "man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter
     ts "man bash" Enter "/^SIMPLE COMMAND EXPANSION" Enter
@@ -126,7 +126,7 @@
     # shellcheck disable=SC2116,SC2005
     b="$(echo "$(echo "$(( a - 42 + "$(echo 5)" ))")")"
     echo "$b"  # Output ?
-    
+
     a=anything
     # shellcheck disable=SC2050
     [[ anything == '$a' ]] && echo Yes  # Err
@@ -138,7 +138,7 @@
     # shellcheck disable=SC2086
     echo "$(dirname "$(readlink -f $file)")/script/lib_alma.sh"  # Err
     # Fix: echo "$(dirname "$(readlink -f "$file")")/script/lib_alma.sh"
-    # Fix: 
+    # Fix:
     # Fix: gs_root_path=$(readlink -f "$file")
     # Fix: gs_root_path=$(dirname "$gs_root_path")
     # Fix: echo "$gs_root_path"/script/lib_alma.sh
@@ -236,12 +236,12 @@
     TODO Dictionaray alias associative arrays
   }
 
-  
+
 # B/ Basic Scripting
   b1_function_and_scope(){
     : 'All code in function, take care of positional arguments
     '
-    
+
     # Everything is global
     var=1
     fct(){ var=2; }  # Err
@@ -252,13 +252,13 @@
   b2_introspection_and_builtin(){
     : 'Where do I come from, where am I, where do I go
     ts "man bash" Enter "/^SHELL BUILTIN COMMANDS" Enter zt z3
-    
+
     TODO
     declare type      # real (user) introspection
 
     man bash / PARAMETERS / Shell Variables
     '
-    
+
     # Hi
     help
     compgen -b        # List builtins like help and compgen
@@ -291,7 +291,7 @@
     # Code inspection
     toto(){ echo titi; }
     type toto
-    
+
     # Variable inspection
     unset a b c d
     declare -i a=1
@@ -315,13 +315,13 @@
     second(){ print_stack; }
     first(){ second; }
     first
-    # Rem: I prefer 
+    # Rem: I prefer
     # Rem: Loop index: Could use ${#arr[@]} like in for i in $(eval echo "{0..$((${#arr[@]}-1))}")
-    
+
     # Also see
     # caller trap       # stack tracing and debugging
     # set shopt ulimit uset
-    
+
     : 'ToRemember
     type fct  # fct(){ :; }
     declare -p var   # var=value
@@ -333,7 +333,7 @@
     * [SO: subcmd wait and return](https://stackoverflow.com/questions/356100)
     * [SO: subcmd capture stdout](https://stackoverflow.com/questions/20017805)
     '
-    
+
     # Define a worker function
     worker(){
       : 'Special 12 and 13'
@@ -347,57 +347,57 @@
       done
     }
     worker 1
-    
+
     # Fork like irresponsible parent
     multiwork1(){
       declare id=''
-      
+
       echo -e "\nForking"
       for id; do
         worker "$id" &  # <----- Here is async
       done
-      
+
       echo -e "\nJoining"
       wait
-      
+
       echo -e "MultiWork1 Over"
     }
     multiwork1 {1..3}
-    
-    
+
+
     # But a good parent, never abandon his children
     # -- So he can know exit status, pending jobs and kill them
     # -- Note that jobs -l (list) or jobs -p (pid) is also printing the PID
     multiwork2(){
       declare id=''
       declare -gA d_pid=() d_ret=()
-      
+
       echo -e "\nForking"
       for id; do
         worker "$id" &     # <----- Here is async
         d_pid[$id]=$!
         echo "PID of $id is ${d_pid[$id]}"
       done
-      
+
       echo -e "\nJoining"
       for id; do
         wait "${d_pid[$id]}"
         d_ret[$id]=$?
         echo "Returned id:$id status:${d_ret[$id]}"
       done
-      
+
       echo "Summary: ${d_pid[*]} | Ret: ${d_ret[*]}"
       echo -e "MultiWork2 Over"
     }
     multiwork2 {1..3}
-    
-    
+
+
     # But he can also get the exit status an stdout of each one
     multiwork3(){
       declare id=''
       declare -gA d_pid=() d_ret=() d_out=()
       declare -i i_fd=100
-      
+
       echo -e "\nForking"
       i_fd=100
       for id; do
@@ -406,7 +406,7 @@
         echo "PID of $id is ${d_pid[$id]}"
         (( i_fd++ ))
       done
-      
+
       echo -e "\nJoining"
       i_fd=100
       for id; do
@@ -417,35 +417,34 @@
         echo "Returned id:$id   status:${d_ret[$id]}   fd:$i_fd   stdout:${d_out[$id]//$'\n'/:}"
         (( i_fd++ ))
       done
-      
+
       echo -e "\nClosing"
       i_fd=100
       for id; do
         eval "exec $i_fd<&-"
         (( i_fd++ ))
       done
-      
+
       echo "Summary: ${d_pid[*]} | Ret: ${d_ret[*]} | Out: ${d_out[*]//$'\n'/:}"
       echo -e "MultiWork3 Over"
     }
     multiwork3 {1..3}
-    
-    
+
+
     # Use file descriptor
     : > /tmp/file       # Chonk hard file
     exec 3<> /tmp/file  # Open fd 3
-    echo value >&3      # Write to fd 
+    echo value >&3      # Write to fd
     cat <&3             # Read from fd 3
     exec 3>&- #close fd 3.
-    
-    
+
+
     # G generic tip: you can just catch the output of subcommands
     # From: https://stackoverflow.com/a/16292136/2544873
-    exec 3>&1
-    # out1=$(worker 1 | tee /dev/fd/3)
-    out2=$(worker 2 | tee >(cat - >&3))
-    exec 3>&-
-    echo "$out2"
+    exec {fd1}>&1
+    out1=$(worker 1 | tee "/dev/fd/$fd1")
+    exec {fd1}>&-
+    echo "$out1"
   }
 
 
@@ -453,10 +452,7 @@
   c1_life_cycle_and_workflow(){
     : 'C1: Software development life cycle
 
-    Do not reivent the wheel, or for educative purposes
-    Make it easy
-
-    1. Shbang + safe (set -u)
+    1. ShBang + safe (set -u)
     2. Enclose in main
     3. Comment skeleton
     4. Baby steps
@@ -472,17 +468,45 @@
       * External context not leaking
     6. Create a non-regression script
     7. Optimise => Goto 3/
-    
+
     # Tips
-    1. Use clauses (early returns)
-    2. Decrease complexity and indentation level
+
+
+    1. Use ShBang
+    2. Use clauses (early returns)
+      * __FAIL FAST__ and be aware of exit codes.
+    3. Use functions
+    4. Use typed variable
+    5. Never backtickst -> `$()`
+    6. Never `[`, never `test` -> `[[`
+    7. Initialise all variable
+    8. Verify input argument
+    9. Verify required file actually exist with the good rights
+    10. Prefer absolute paths
+    11. Quote all parameter expansion
+    12. Always cleanup with a trap
+    13. Try to localize shopt usage and disable option when finished.
+    14. Use Bash variable substitution if possible before awk/sed.
+    15. Dont be afraid of printf, it iss more powerful than echo.
+    16. Use .sh or .bash extension if file is meant to be included/sourced. Never on executable script.
+    17. When expecting or exporting environment, consider namespacing variables when subshells may be involved.
+    18. Decrease complexity and indentation level
+    19. Do not reivent the wheel, or for educative purposes
+    20. Comment
+    21. Name variable and function properly (meaningfull)
+    22. Use stderr if it is for human (an redirect stderr)
+    23. Make it both time library and binary
+      * `[[ “$0” == “$BASH_SOURCE” ]] && main “$@”`
+      * `(return 0 2>/dev/null) ||  main “$@”`
+    24. Be consistent
+    25. Make it easy
+
     TODO Demo: A basic parser, and calculator
     '
 
-    awk 'awk code TOREM 
+    awk 'awk code TOREM
     /asdasd/ {exit }
     '
-
   }
 
   c2_binary_and_library(){
@@ -523,7 +547,7 @@
     sed '
      s/asda\s*sd/sdasda/g
     '
-    
+
     : '
       # Program
       * [Shellcheck](https://github.com/koalaman/shellchec)
@@ -531,7 +555,7 @@
       * [Vim / Slime](https://github.com/jpalardy/vim-slime)
       * [Tmux](https://github.com/tmux/tmux)
       * [Dotfiles (my)](https://github.com/tinmarino/vimfiles/tree/master/dotfile)
-      
+
       # Books
       * [ABS: Advanced Bash Scripting](https://tldp.org/LDP/abs/abs-guide.pdf)
         * __The Bash reference__: An in-depth exploration of the art of shell scripting (by Mendel Cooper)
@@ -540,8 +564,8 @@
 
       # Documentation
       * [Object Oriented BaSh](https://stackoverflow.com/questions/36771080)
-      * [Style for BaSh (google)](https://google.github.io/styleguide/shellguide.html)
-      
+      * [Google Style for BaSh](https://google.github.io/styleguide/shellguide.html)
+
       # Code
       * [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
       * [Bash Source code](git://git.savannah.gnu.org/bash.git)

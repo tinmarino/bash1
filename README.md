@@ -2,6 +2,7 @@
 
 # TODO
 
+* Vim: better ctrl-f removing indentation !!!
 * Vim: Embed markdown syntax in docstring
 * Code: finishe is prime
 * $IFS
