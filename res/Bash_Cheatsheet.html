@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>~/wiki/wiki/Bash_Cheatsheet.sh.html</title>
+<meta name="Generator" content="Vim/8.2">
+<meta name="plugin-version" content="vim8.1_v2">
+<meta name="syntax" content="sh">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,expand_tabs,prevent_copy=,use_input_for_pc=fallback">
+<meta name="colorscheme" content="gruvbox">
+<style>
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #ebdbb2; background-color: #282828; }
+body { font-family: monospace; color: #ebdbb2; background-color: #282828; }
+* { font-size: 1em; }
+.String { color: #b8bb26; }
+.GruvboxAqua { color: #8ec07c; }
+.GruvboxOrange { color: #fe8019; }
+.Normal { color: #ebdbb2; background-color: #282828; padding-bottom: 1px; }
+.Comment { color: #928374; }
+.GruvboxPurple { color: #d3869b; }
+.GruvboxRed { color: #fb4934; }
+.GruvboxBlue { color: #83a598; }
+-->
+</style>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Comment">#!/usr/bin/env bash</span>
+
+<span class="Comment"># 1/ Grammar</span>
+<span class="Comment">############</span>
+
+variable<span class="GruvboxAqua">()</span>{  <span class="Comment"># Declaration and assignment</span>
+  <span class="GruvboxRed">declare</span>    <span class="GruvboxBlue">string</span>=<span class="Normal">&quot;</span><span class="String">a b</span><span class="Normal">&quot;</span>; <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$string</span><span class="Normal">&quot;</span>
+  <span class="GruvboxRed">declare</span> <span class="GruvboxOrange">-i</span> <span class="GruvboxBlue">int</span>=<span class="GruvboxPurple">21</span>; <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$((</span><span class="GruvboxOrange"> int * </span><span class="GruvboxPurple">2</span><span class="GruvboxOrange"> </span><span class="GruvboxAqua">))</span><span class="Normal">&quot;</span>
+  <span class="GruvboxRed">declare</span> <span class="GruvboxOrange">-a</span> <span class="GruvboxBlue">array</span>=<span class="GruvboxAqua">(</span>a <span class="Normal">&quot;</span><span class="String">b c</span><span class="Normal">&quot;</span><span class="GruvboxAqua">)</span>; <span class="GruvboxRed">for</span> string <span class="GruvboxRed">in</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">array</span><span class="GruvboxAqua">[</span>@<span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span>; <span class="GruvboxRed">do</span> <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$string</span><span class="Normal">&quot;</span><span class="Normal">;</span> <span class="GruvboxRed">done</span>
+  <span class="GruvboxRed">declare</span> <span class="GruvboxOrange">-A</span> <span class="GruvboxBlue">dict</span>=<span class="GruvboxAqua">(</span>[a]<span class="Normal">=</span><span class="Normal">&quot;</span><span class="String">b c</span><span class="Normal">&quot;</span> [<span class="Normal">&quot;</span><span class="String">d e</span><span class="Normal">&quot;</span>]<span class="Normal">=</span>f<span class="GruvboxAqua">)</span>; <span class="GruvboxRed">for</span> key <span class="GruvboxRed">in</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${!</span><span class="GruvboxAqua">dict</span><span class="GruvboxAqua">[</span>@<span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span>; <span class="GruvboxRed">do</span> <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$key</span><span class="String">: </span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">dict</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$key</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span><span class="Normal">;</span> <span class="GruvboxRed">done</span>
+}
+
+condiction<span class="GruvboxAqua">()</span>{  <span class="Comment"># If statement</span>
+  <span class="GruvboxRed">if </span><span class="GruvboxRed">true</span><span class="Normal">;</span> <span class="GruvboxRed">then</span>
+    <span class="GruvboxRed">echo</span><span class="String"> as simple as that</span>
+  <span class="GruvboxRed">fi</span>
+
+  <span class="GruvboxRed">if </span><span class="GruvboxOrange">((</span> <span class="GruvboxPurple">1</span> <span class="GruvboxRed">&gt;</span> <span class="GruvboxPurple">1</span><span class="GruvboxOrange">))</span><span class="Normal">;</span> <span class="GruvboxRed">then</span> <span class="GruvboxRed">echo</span><span class="String"> no</span>
+  <span class="GruvboxRed">elif</span> <span class="GruvboxOrange">[[</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">$a</span><span class="Normal">&quot;</span> <span class="GruvboxRed">==</span> <span class="String">toto</span> <span class="GruvboxOrange">]]</span><span class="Normal">;</span> <span class="GruvboxRed">then</span> <span class="GruvboxRed">echo</span><span class="String"> no</span>
+  <span class="GruvboxRed">elif</span> <span class="GruvboxRed">true</span><span class="Normal">;</span> <span class="GruvboxRed">then</span> <span class="GruvboxRed">echo</span><span class="String"> yes</span>
+  <span class="GruvboxRed">else</span> <span class="GruvboxRed">echo</span><span class="String"> no</span>
+  <span class="GruvboxRed">fi</span>
+}
+
+loop<span class="GruvboxAqua">()</span>{  <span class="Comment"># For statement</span>
+  <span class="GruvboxRed">for</span> string <span class="GruvboxRed">in</span> a <span class="Normal">&quot;</span><span class="String">b c</span><span class="Normal">&quot;</span>; <span class="GruvboxRed">do</span>
+    <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$string</span><span class="Normal">&quot;</span>
+  <span class="GruvboxRed">done</span>
+
+  <span class="GruvboxRed">while </span><span class="GruvboxRed">:</span><span class="Normal">;</span><span class="GruvboxRed"> </span><span class="GruvboxRed">do</span> <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$((</span><span class="GruvboxOrange">i++</span><span class="GruvboxAqua">))</span><span class="Normal">&quot;</span><span class="Normal">;</span> <span class="GruvboxRed">done</span>
+}
+
+func<span class="GruvboxAqua">()</span>{  <span class="Comment"># Function</span>
+  func<span class="GruvboxAqua">()</span>{
+    <span class="GruvboxRed">for</span> i<span class="Normal">;</span> <span class="GruvboxRed">do</span> <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$((</span><span class="GruvboxOrange">j++</span><span class="GruvboxAqua">))</span><span class="String">: </span><span class="GruvboxAqua">$i</span><span class="String">|</span><span class="Normal">&quot;</span><span class="Normal">;</span> <span class="GruvboxRed">done</span>
+  }
+
+  func a <span class="Normal">&quot;</span><span class="String">b c</span><span class="Normal">&quot;</span>
+}
+
+switch<span class="GruvboxAqua">()</span>{  <span class="Comment"># Switch statement is case</span>
+  <span class="GruvboxRed">while </span><span class="GruvboxOrange">[[</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">$#</span><span class="Normal">&quot;</span> <span class="GruvboxRed">-gt</span> <span class="GruvboxPurple">0</span> <span class="GruvboxOrange">]]</span><span class="Normal">;</span><span class="GruvboxRed"> </span><span class="GruvboxRed">do</span>
+    <span class="GruvboxRed">case</span> <span class="GruvboxAqua">$1</span> <span class="GruvboxRed">in</span>
+      --ant<span class="GruvboxRed">)</span> <span class="GruvboxBlue">antenna</span>=<span class="GruvboxAqua">$2</span><span class="Normal">;</span> <span class="GruvboxRed">shift</span><span class="GruvboxRed">;;</span>
+      -v<span class="GruvboxRed">)</span> <span class="GruvboxBlue">verbose</span>=<span class="GruvboxPurple">1</span><span class="GruvboxRed">;;</span>
+      *<span class="GruvboxRed">)</span> <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="String">unknown argument</span><span class="Normal">&quot;</span><span class="GruvboxRed">;;</span>
+    <span class="GruvboxRed">esac</span>
+    <span class="GruvboxRed">shift</span>
+  <span class="GruvboxRed">done</span>
+  <span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="String">antenna:</span><span class="GruvboxAqua">$antenna</span><span class="String">, verbose:</span><span class="GruvboxAqua">$verbose</span><span class="Normal">&quot;</span>
+}
+
+redirection<span class="GruvboxAqua">()</span>{
+  <span class="GruvboxRed">exec</span> <span class="GruvboxPurple">3</span><span class="Normal">&lt;&gt;</span> /tmp/file  <span class="Comment"># Open fd 3</span>
+  <span class="GruvboxRed">echo</span><span class="String"> value </span><span class="Normal">&gt;&amp;3</span>      <span class="Comment"># Write to fd</span>
+  cat <span class="Normal">&lt;&amp;3</span>             <span class="Comment"># Read from fd 3</span>
+  <span class="GruvboxRed">exec</span> <span class="GruvboxPurple">3</span><span class="Normal">&gt;&amp;-</span>           <span class="Comment"># Close fd 3.</span>
+}
+
+
+<span class="Comment"># 2/ Line</span>
+<span class="Comment">#########</span>
+
+<span class="Comment"># List command in scope with &quot;corr&quot; in their name</span>
+compgen <span class="GruvboxOrange">-c</span> | grep <span class="GruvboxOrange">-i</span> corr
+
+<span class="Comment"># Print line separated PATH variable</span>
+<span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">PATH</span><span class="Normal">//</span>:<span class="Normal">/</span>$'<span class="GruvboxOrange">\n</span>'<span class="GruvboxAqua">}</span><span class="Normal">&quot;</span>
+
+<span class="Comment"># Slurp: read file to string</span>
+<span class="GruvboxBlue">string</span>=<span class="GruvboxAqua">$(</span><span class="Normal">&lt;</span><span class="GruvboxOrange">file.txt</span><span class="GruvboxAqua">)</span>
+
+
+<span class="Comment"># 3/ Advanced</span>
+<span class="Comment">#############</span>
+
+<span class="Comment"># Forking pipe generic</span>
+<span class="GruvboxRed">exec</span> {fd}<span class="Normal">&gt;&amp;1</span>
+<span class="GruvboxBlue">out</span>=<span class="GruvboxAqua">$(</span><span class="GruvboxRed">echo</span><span class="String"> toto </span><span class="Normal">|</span><span class="GruvboxOrange"> tee </span><span class="Normal">&quot;</span><span class="String">/dev/fd/</span><span class="GruvboxAqua">$fd</span><span class="Normal">&quot;</span><span class="GruvboxAqua">)</span>  <span class="Comment"># or tee /dev/tty, or tee &gt;(cat - &gt;&amp;{fd})</span>
+<span class="GruvboxRed">exec</span> {fd}<span class="Normal">&gt;&amp;-</span>
+<span class="GruvboxRed">echo</span><span class="String"> </span><span class="Normal">&quot;</span><span class="GruvboxAqua">$out</span><span class="Normal">&quot;</span>
+
+<span class="Comment"># Fork join</span>
+<span class="GruvboxRed">declare</span> <span class="GruvboxOrange">-A</span> <span class="GruvboxBlue">d_pid</span>=<span class="GruvboxAqua">()</span> <span class="GruvboxBlue">d_fd</span>=<span class="GruvboxAqua">()</span> <span class="GruvboxBlue">d_ret</span>=<span class="GruvboxAqua">()</span> <span class="GruvboxBlue">d_out</span>=<span class="GruvboxAqua">()</span>
+<span class="GruvboxRed">for</span> id <span class="GruvboxRed">in</span> <span class="GruvboxOrange">{</span><span class="GruvboxAqua">0</span>..<span class="GruvboxPurple">9</span><span class="GruvboxOrange">}</span>; <span class="GruvboxRed">do</span>  <span class="Comment"># Fork 10 subprocess</span>
+  <span class="GruvboxRed">eval</span> <span class="Normal">&quot;</span><span class="String">exec {fd}&lt; &lt;(echo message</span><span class="GruvboxAqua">$id</span><span class="String">)</span><span class="Normal">&quot;</span><span class="Normal">;</span> d_pid[<span class="GruvboxAqua">$id</span>]<span class="GruvboxRed">=</span><span class="GruvboxAqua">$!</span><span class="Normal">;</span> d_fd[<span class="GruvboxAqua">$id</span>]<span class="GruvboxRed">=</span><span class="GruvboxAqua">$fd</span>
+<span class="GruvboxRed">done</span>
+<span class="GruvboxRed">for</span> id <span class="GruvboxRed">in</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${!</span><span class="GruvboxAqua">d_pid</span><span class="GruvboxAqua">[</span>@<span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span>; <span class="GruvboxRed">do</span>  <span class="Comment"># Join and collect</span>
+  <span class="GruvboxRed">wait</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">d_pid</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$id</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span><span class="Normal">;</span> d_ret[<span class="GruvboxAqua">$id</span>]<span class="GruvboxRed">=</span><span class="GruvboxAqua">$?</span>  <span class="Comment"># Wait and collect status</span>
+  d_out[<span class="GruvboxAqua">$id</span>]<span class="GruvboxRed">=</span><span class="GruvboxAqua">$(</span><span class="GruvboxOrange">cat </span><span class="Normal">&lt;</span><span class="Normal">&amp;</span><span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">d_fd</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$id</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span><span class="GruvboxAqua">)</span>  <span class="Comment"># Wait and collect stdout</span>
+<span class="GruvboxRed">done</span>
+<span class="GruvboxRed">for</span> id <span class="GruvboxRed">in</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${!</span><span class="GruvboxAqua">d_pid</span><span class="GruvboxAqua">[</span>@<span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span>; <span class="GruvboxRed">do</span>  <span class="Comment"># Print wise</span>
+  <span class="GruvboxRed">printf</span> <span class="Normal">'</span><span class="String">| %-3s | %-3s | %-6s | %-2s | %s |\n</span><span class="Normal">'</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">$id</span><span class="Normal">&quot;</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">d_fd</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$id</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">d_pid</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$id</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">d_ret</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$id</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span> <span class="Normal">&quot;</span><span class="GruvboxAqua">${</span><span class="GruvboxAqua">d_out</span><span class="GruvboxAqua">[</span><span class="GruvboxAqua">$id</span><span class="GruvboxAqua">]</span><span class="GruvboxAqua">}</span><span class="Normal">&quot;</span>
+<span class="GruvboxRed">done</span>
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

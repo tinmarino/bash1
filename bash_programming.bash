@@ -237,9 +237,10 @@
   }
 
 
-# B/ Basic Scripting
+# B/ Bash Scripting
   b1_function_and_scope(){
-    : 'All code in function, take care of positional arguments
+    : 'Put all code in function
+    Take care of positional arguments
     '
 
     # Everything is global
@@ -439,12 +440,27 @@
     exec 3>&- #close fd 3.
 
 
+    # File descriptor auto allocation
+    { echo toto | tee "/dev/fd/$fd"; } {fd}>&1
+      
+      
     # G generic tip: you can just catch the output of subcommands
     # From: https://stackoverflow.com/a/16292136/2544873
     exec {fd1}>&1
     out1=$(worker 1 | tee "/dev/fd/$fd1")
     exec {fd1}>&-
     echo "$out1"
+    
+    # Also:
+    worker 1 | tee /dev/tty
+    worker 2 | tee >(cat - >&{fd})
+    
+    : 'ToRemember:
+    * Harvest the pid of your children with `$!`
+    * Harvest the stdout of your children. Fork it to the initial stdout with shell-wide redirection with `exec`
+    * At fork: Do not suppose everything is gonna be all
+    * At fork: Identify variable shared between parent and children. See ICT-18698 surprises: acacorr_cleaner async.
+    '
   }
 
 
