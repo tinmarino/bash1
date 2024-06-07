@@ -54,6 +54,9 @@ get_task_path(){ echo -n "$path_task/$1.task"; }
 
 
 if ! (return 0 2>/dev/null); then
+  >&2 echo "--> $0 starting with $*."
+  >&2 print_args "$@"
   task_demo "$@"; res=$?
+  >&2 echo "<-- $0 returned with $res."
   exit "$res"
 fi

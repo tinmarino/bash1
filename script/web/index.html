@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task API</title>
+</head>
+<body>
+  <h1>Task API</h1>
+
+  <h2>Add Task</h2>
+  <input type="text" id="taskInput">
+  <button onclick="addTask()">Add Task</button>
+
+  <h2>Delete Task</h2>
+  <input type="text" id="deleteInput">
+  <button onclick="deleteTask()">Delete Task</button>
+
+  <h2>List Tasks</h2>
+  <button onclick="listTasks()">List Tasks</button>
+  <ul id="taskList"></ul>
+
+  <script>
+    function addTask() {
+      const task = document.getElementById('taskInput').value;
+      fetch('/api?add&', { method: 'GET'})
+      .then(response => {
+        if (response.ok) {
+          alert('Task added successfully');
+        } else {
+          alert('Failed to add task');
+        }
+      });
+    }
+
+    function deleteTask() {
+      const task = document.getElementById('deleteInput').value;
+      fetch('/task-api/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ task: task })
+      })
+      .then(response => {
+        if (response.ok) {
+          alert('Task deleted successfully');
+        } else {
+          alert('Failed to delete task');
+        }
+      });
+    }
+
+    function listTasks() {
+      fetch('/task-api/list')
+      .then(response => response.json())
+      .then(data => {
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = '';
+        data.forEach(task => {
+          const li = document.createElement('li');
+          li.appendChild(document.createTextNode(task));
+          taskList.appendChild(li);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
