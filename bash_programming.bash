@@ -208,7 +208,7 @@
     # Fix: echo "Out: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
 
     : 'Use "@" (not "*") and double quote it
-    Ex: a_names=(Ruben "Maria Jesus"); printf "%s\n" "${a_names[@]}"
+    Ex: a_names=(Isaac "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
     TODO
     * copy
@@ -355,11 +355,11 @@
 
       echo -e "\nForking"
       for id; do
-        worker "$id" &  # <----- Here is async
+        worker "$id" &  # <----- 1: Here is async Fork
       done
 
       echo -e "\nJoining"
-      wait
+      wait              # <----- 2: Here is the async wait
 
       echo -e "MultiWork1 Over"
     }
@@ -375,15 +375,15 @@
 
       echo -e "\nForking"
       for id; do
-        worker "$id" &     # <----- Here is async
-        d_pid[$id]=$!
+        worker "$id" &     # <----- 1.0: Here is async fork
+        d_pid[$id]=$!      # <----- 1.1: Here I save the PID
         echo "PID of $id is ${d_pid[$id]}"
       done
 
       echo -e "\nJoining"
       for id; do
-        wait "${d_pid[$id]}"
-        d_ret[$id]=$?
+        wait "${d_pid[$id]}" # <--- 2.0: Here is the async join
+        d_ret[$id]=$?      # <----- 2.1: Here I store the exit status
         echo "Returned id:$id status:${d_ret[$id]}"
       done
 
@@ -396,38 +396,33 @@
     # But he can also get the exit status an stdout of each one
     multiwork3(){
       declare id=''
-      declare -gA d_pid=() d_ret=() d_out=()
-      declare -i i_fd=100
+      declare -gA d_pid=() d_ret=() d_out=() d_fd=()
+      declare -i i_fd=0
 
       echo -e "\nForking"
-      i_fd=100
       for id; do
-        eval "exec $i_fd< <(worker \"$id\")"  # <----- Here is async
-        d_pid[$id]=$!
-        echo "PID of $id is ${d_pid[$id]}"
-        (( i_fd++ ))
+        exec {i_fd}< <(worker "$id")  # <----- 1.0 Here is the async fork
+        d_pid[$id]=$!                 # <----- 1.1 Grab its PID
+        d_fd[$id]=$i_fd               # <----- 1.2 Grab its FD
+        >&2 echo "PID of $id is ${d_pid[$id]}, fd=${d_fd[$id]}"
       done
 
       echo -e "\nJoining"
-      i_fd=100
       for id; do
-        echo WAIT
-        wait "${d_pid[$id]}"; d_ret[$id]=$?  # Wait for status
-        echo REEAD
-        d_out[$id]=$(cat <&$i_fd)  # Wait for stdout
-        echo "Returned id:$id   status:${d_ret[$id]}   fd:$i_fd   stdout:${d_out[$id]//$'\n'/:}"
-        (( i_fd++ ))
+        wait "${d_pid[$id]}";         # <------ 2.0 Here is the async join
+        d_ret[$id]=$?                 # <------ 2.1 Get the exit status
+        d_out[$id]=$(cat <&${d_fd[$id]})  # <-- 2.2 Get the stdout
+        >&2 echo "Returned id:$id   status:${d_ret[$id]}   fd:$i_fd   stdout:${d_out[$id]//$'\n'/:}"
       done
 
       echo -e "\nClosing"
-      i_fd=100
       for id; do
-        eval "exec $i_fd<&-"
-        (( i_fd++ ))
+        i_fd=${d_fd[$id]}  # Just to avoid shellcheck
+        exec {i_fd}<&-
       done
 
-      echo "Summary: ${d_pid[*]} | Ret: ${d_ret[*]} | Out: ${d_out[*]//$'\n'/:}"
-      echo -e "MultiWork3 Over"
+      >&2 echo "Summary: ${d_pid[*]} | Ret: ${d_ret[*]} | Out: ${d_out[*]//$'\n'/:}"
+      >&2 echo -e "MultiWork3 Over"
     }
     multiwork3 {1..3}
 
@@ -444,7 +439,7 @@
     { echo toto | tee "/dev/fd/$fd"; } {fd}>&1
       
       
-    # G generic tip: you can just catch the output of subcommands
+    # Generic tip: you can just catch the output of subcommands
     # From: https://stackoverflow.com/a/16292136/2544873
     exec {fd1}>&1
     out1=$(worker 1 | tee "/dev/fd/$fd1")
