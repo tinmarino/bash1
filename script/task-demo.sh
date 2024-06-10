@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-path_task=~/.local/var/task 
+path_task=/var/www/task   # Warning HARDCODE
 
 task_demo(){
   : 'Main dispatcher'
@@ -51,11 +51,23 @@ task_list(){
 
 
 get_task_path(){ echo -n "$path_task/$1.task"; }
+print_args(){
+  ### Print input arguments, one per line
+  local cnt=1
+  for s_arg in "$@"; do
+    echo "$((cnt++))/ $s_arg!"
+  done
+}
 
 
 if ! (return 0 2>/dev/null); then
   >&2 echo "--> $0 starting with $*."
   >&2 print_args "$@"
+  if [[ -v QUERY_STRING ]]; then
+    IFS='&' read -ra a_args <<< "$QUERY_STRING"
+    set -- "${a_args[@]}"
+    echo -e "Content-Type: text/plain\r\n"
+  fi
   task_demo "$@"; res=$?
   >&2 echo "<-- $0 returned with $res."
   exit "$res"
