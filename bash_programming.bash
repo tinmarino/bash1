@@ -16,20 +16,22 @@
   '
 
 # A/ Bash Shelling
+  : 'Write a command'
+
   a1_token_and_space(){
     : 'Parenthesis or Comma -> Space
 
-    ```
-    "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
-    A simple command  is  a sequence of optional variable assignments followed by blank-separated words and redirections, and terminated by a control operator
-    ```
-    Note the blank-separated
+      ```
+      "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
+      A simple command  is  a sequence of optional variable assignments followed by blank-separated words and redirections, and terminated by a control operator
+      ```
+      Note the blank-separated
 
-    ```
-    ts "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter zz
-    A variable may be assigned to by a statement of the form
+      ```
+      ts "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter zz
+      A variable may be assigned to by a statement of the form
 
-           name=[value]
+             name=[value]
     ```
     '
     # Asignment
@@ -48,8 +50,8 @@
 
     # Concatenation
     # shellcheck disable=SC2086
-    c=a value is $a  # Err3
-    # Fix: c="a value is $a"
+    c=the value of a is $a  # Err3
+    # Fix: c="the value of a is: $a"
     # Rem: Spaces count
 
     # Command invocation
@@ -66,29 +68,30 @@
     # Rem: Parenthesis | Comma -> Spaces
 
     : 'ToRemember:
-    BaSh is a Shell languages
-    The koken separator is the white space
-    Imediate are imediates <= string oriented, macro
+      BaSh is a Shell language
+      The token separator is the white space
+      Unquoted arguments are imediates.
+      It is a string oriented, macro-like language
     '
   }
 
   a2_interpolation_and_quote(){
-    : 'Interpolation: store values, results in variables
-    Bash looks like a macro programming language.
-    Macro replacement is called substitution
+    : 'Interpolation: store results (values) in variables (keys).
+      Bash looks like a macro programming language.
+      Macro replacement is called substitution and it is recursive.
 
-    | Token      | Substitution |
-    | ---        | ---          |
-    | ${ ... }   | Paramter     |
-    | $( ... )   | Command      |
-    | $(( ... )) | Arithmetic   |
+      | Token      | Substitution |
+      | ---        | ---          |
+      | ${ ... }   | Parameter     |
+      | $( ... )   | Command      |
+      | $(( ... )) | Arithmetic   |
 
-    ```tmux
-    ts "man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter
-    ts "man bash" Enter "/^SIMPLE COMMAND EXPANSION" Enter
-    ts "man bash" Enter "/QUOTING" Enter
-    ts "man bash" /EXPANSION / Quote Removal
-    ```
+      ```tmux
+      ts "man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter
+      ts "man bash" Enter "/^SIMPLE COMMAND EXPANSION" Enter
+      ts "man bash" Enter "/QUOTING" Enter
+      ts "man bash" /EXPANSION / Quote Removal
+      ```
     '
 
     #
@@ -104,7 +107,7 @@
       6/ Process Substitution' ': <(echo toto) \\n\
       7/ Word spliting'        ': many     whitespaces	tab and newlines\\n\
       8/ Pathname Expansion'   ': * \\n\
-      9/ Quote Removal'        ': '' 'many     whitespaces' \\n\
+      9/ Quote Removal'        ': '' 'many     whitespaces  ' "double   quotes"\\n\
       -/ ----------------------------------------------------------\\n
 
 
@@ -120,13 +123,16 @@
     b="${a} is fine"
     echo "$b"
     # shellcheck disable=SC2097,SC2098
-    b=$a echo "$b"  # Output ?
+    c=$a echo "$c"  # Output ?
+    # Fix: c=$a; echo "$c"
 
+    # Nested quotes around expansions
     a=42
     # shellcheck disable=SC2116,SC2005
     b="$(echo "$(echo "$(( a - 42 + "$(echo 5)" ))")")"
     echo "$b"  # Output ?
 
+    # Only double quote permits expansion
     a=anything
     # shellcheck disable=SC2050
     [[ anything == '$a' ]] && echo Yes  # Err
@@ -134,9 +140,9 @@
 
     # Nested command substitution 1
     file=${BASH_SOURCE[0]}
-    file="/alma/ACS-2021NOV/CONTROL/avoid spaces in filenames.sh"
+    file=~/"Iso/avoid spaces  in filenames.sh"
     # shellcheck disable=SC2086
-    echo "$(dirname "$(readlink -f $file)")/script/lib_alma.sh"  # Err
+    echo "$(dirname "$(readlink -f $file)")/filename2.sh"  # Err
     # Fix: echo "$(dirname "$(readlink -f "$file")")/script/lib_alma.sh"
     # Fix:
     # Fix: gs_root_path=$(readlink -f "$file")
@@ -150,7 +156,7 @@
   }
 
   a3_context_and_array(){
-    : 'Everithing is relative ... to the execution context
+    : 'Everything is relative ... to the execution context
     | Token      | Context      |
     | ---        | ---          |
     | [[ ... ]]  | String       |
@@ -171,6 +177,7 @@
     # Rem: "if" is expected a command and "((" is the arithemtic compound command
     # Rem: man bash / ARITHMETIC EVALUATION
 
+    # Conditional operators
     toto=bakan titi=$toto
     (( toto == titi )) && echo "Yes $toto == $titi" || echo No  # Err
     # Fix: [[ toto == "$titi" ]] && echo Yes || echo No
@@ -208,15 +215,15 @@
     # Fix: echo "Out: a=$a, res=$res, BASH_SUBSHELL=$BASH_SUBSHELL"
 
     : 'Use "@" (not "*") and double quote it
-    Ex: a_names=(Isaac "Maria Jesus"); printf "%s\n" "${a_names[@]}"
+      Ex: a_names=(Isaac "Maria Jesus"); printf "%s\n" "${a_names[@]}"
 
-    TODO
-    * copy
-    * set -- and shift
+      TODO
+      * copy
+      * set -- and shift
 
-    <= Only brace expansion, word splitting, and pathname expansion can increase the number of words of the expansion; other expansions expand a single word to a single word.
-    <= The only exceptions to this are the expansions of "$@" and "${name[@]}",
-    man bash / EXPANSION
+      <= Only brace expansion, word splitting, and pathname expansion can increase the number of words of the expansion; other expansions expand a single word to a single word.
+      <= The only exceptions to this are the expansions of "$@" and "${name[@]}",
+      man bash / EXPANSION
     '
 
     print_args(){
@@ -233,31 +240,35 @@
     # Fix:   done
     # Fix: }
 
-    TODO Dictionaray alias associative arrays
+    : '
+      TODO Associative arrays (aka dic), small syntax snippet for completeness
+    '
   }
 
 
 # B/ Bash Scripting
+  : 'Write a script'
+
   b1_function_and_scope(){
     : 'Put all code in function
-    Take care of positional arguments
+      Take care of positional arguments
     '
 
     # Everything is global
     var=1
-    fct(){ var=2; }  # Err
-    fct; echo "$var"
-    # Fix: fct(){ local -i var=2; }
+    fct(){ var=2; }
+    fct; echo "$var"  # Err: what  does that print
+    # Fix: fct(){ local -i var=2; }; fct; echo "$var"
   }
 
   b2_introspection_and_builtin(){
     : 'Where do I come from, where am I, where do I go
-    ts "man bash" Enter "/^SHELL BUILTIN COMMANDS" Enter zt z3
+      ts "man bash" Enter "/^SHELL BUILTIN COMMANDS" Enter zt z3
 
-    TODO
-    declare type      # real (user) introspection
+      TODO
+      declare type      # real (user) introspection
 
-    man bash / PARAMETERS / Shell Variables
+      man bash / PARAMETERS / Shell Variables
     '
 
     # Hi
@@ -267,7 +278,7 @@
 
     # Display possible completions
     compgen -c | grep -i gui  # c like command
-    compgen -A "<press-tab>"  # With bash > 4.4 <= Alma is too old
+    compgen -A "<press-tab>"  # With bash > 4.4
     compgen -A function
     compgen -v
     # Rem: COMPletion GENerator
@@ -324,15 +335,15 @@
     # set shopt ulimit uset
 
     : 'ToRemember
-    type fct  # fct(){ :; }
-    declare -p var   # var=value
+      type fct  # fct(){ :; }
+      declare -p var   # var=value
     '
   }
 
   b3_process_control_and_job(){
     : '
-    * [SO: subcmd wait and return](https://stackoverflow.com/questions/356100)
-    * [SO: subcmd capture stdout](https://stackoverflow.com/questions/20017805)
+      * [SO: subcmd wait and return](https://stackoverflow.com/questions/356100)
+      * [SO: subcmd capture stdout](https://stackoverflow.com/questions/20017805)
     '
 
     # Define a worker function
@@ -451,10 +462,10 @@
     worker 2 | tee >(cat - >&{fd})
     
     : 'ToRemember:
-    * Harvest the pid of your children with `$!`
-    * Harvest the stdout of your children. Fork it to the initial stdout with shell-wide redirection with `exec`
-    * At fork: Do not suppose everything is gonna be all
-    * At fork: Identify variable shared between parent and children. See ICT-18698 surprises: acacorr_cleaner async.
+      * Harvest the pid of your children with `$!`
+      * Harvest the stdout of your children. Fork it to the initial stdout with shell-wide redirection with `exec`
+      * At fork: Do not suppose everything is gonna be all right
+      * At fork: Identify variable shared between parent and children. See ICT-18698 surprises: acacorr_cleaner async.
     '
   }
 
@@ -463,7 +474,7 @@
   c1_life_cycle_and_workflow(){
     : 'C1: Software development life cycle
 
-    1. ShBang + safe (set -u)
+    1. ShBang (#!/usr/bin/env bash) + safe mode (set -u)
     2. Enclose in main
     3. Comment skeleton
     4. Baby steps
@@ -482,20 +493,19 @@
 
     # Tips
 
-
     1. Use ShBang
     2. Use clauses (early returns)
       * __FAIL FAST__ and be aware of exit codes.
     3. Use functions
     4. Use typed variable
-    5. Never backtickst -> `$()`
-    6. Never `[`, never `test` -> `[[`
+    5. Never backlist -> `$()`
+    6. Never `[`, never `test`, prefer the Bashism `[[`
     7. Initialise all variable
     8. Verify input argument
-    9. Verify required file actually exist with the good rights
-    10. Prefer absolute paths
+    9. Verify required file actually exist with the correct permision => is reaable
+    10. Prefer absolute paths or start the locals with "./" to avoid the command to interpret them as arguments
     11. Quote all parameter expansion
-    12. Always cleanup with a trap
+    12. If cleanup is needed, use a trap
     13. Try to localize shopt usage and disable option when finished.
     14. Use Bash variable substitution if possible before awk/sed.
     15. Dont be afraid of printf, it iss more powerful than echo.
@@ -510,7 +520,9 @@
       * `[[ “$0” == “$BASH_SOURCE” ]] && main “$@”`
       * `(return 0 2>/dev/null) ||  main “$@”`
     24. Be consistent
-    25. Make it easy
+    25. Keep it simple stupid KISS = make it easy
+    26. Do not repeat yourself (use named functions at least)
+
 
     TODO Demo: A basic parser, and calculator
     '
@@ -521,11 +533,49 @@
   }
 
   c2_binary_and_library(){
-    :
+    : 'Coding with mutliple files to mutualise functionalities
+    '
+
+    # Show the current script path
+    echo "$0"
+    printf "%s |" "${BASH_SOURCE[@]}"
+
+    # Import script file, here vman command in my PATH
+    source "$(which vman)"
+    # shellcheck disable=SC2002  # Useless cat
+    cat "(which vman)" | vman_select
+
+    # Conditional main call
+    # -- More robust than [[ $0 != "$BASH_SOURCE" ]]
+    # -- But must be run at top level (not in a function)
+    # -- See: https://stackoverflow.com/a/28776166/2544873
+    if ! (return 0 2>/dev/null); then
+      main "$@"; exit $?
+    fi
+
+    : 'ToRemember
+      Bash has not internal package manager. Some external tools can help
+        * BPKG: https://github.com/bpkg/bpkg
+        * Basher: https://github.com/basherpm/basher
+
+      Or a git submodules
+    '
   }
 
-  c3_program_and_asynchornism(){
-    :
+
+  c3_program_and_asynchronism(){
+    : ' Currently in Process control
+
+      TODO add some pstree demo
+      /proc/$$ and everything is a file
+      /dev/random vs $RANDOM
+      builtin and 
+    '
+
+    cd /proc/$$ || return
+    ls
+    cat cmdline
+
   }
 
 
@@ -536,17 +586,18 @@
     a_cmd=(
       sed    # Big dady
       # Pipe
-      tee    # Duplicate stream
+      cat    # Print content of file (like conCAT)
+      tee    # Duplicate stream (like a T)
+      nc     # Network operation (like NetCat)
       xargs  # Run command for each parameter
       grep   # Regex filter (better use ripgrep)
       rev    # Reverse columns (characters)
-      tac    # Reverse lines
+      tac    # Reverse lines (like the reverse of cat)
       cut    # Fast column filter -d" " (delimiter) -f2-9 (from 2 to 9)
       # Operation
       timeout  # Run command with a timeout
       date   # Time operation
       bc     # Math operation
-      nc     # Network operation (HTTP)
       strace # Kernel operations
     )
     for s_cmd in "${a_cmd[@]}"; do
@@ -555,10 +606,6 @@
   }
 
   annexe2_Links(){
-    sed '
-     s/asda\s*sd/sdasda/g
-    '
-
     : '
       # Program
       * [Shellcheck](https://github.com/koalaman/shellchec)
