@@ -1,0 +1,59 @@
+           .-""""-.
+          ////||\\\   Humans, some mammels
+          |/      \|  Carbon based and hard to predict
+Ring 4   (  @   @   )
+          |   C    |
+           \  ==  /
+            `|--|`
+              ^
+              |
+           +--------------------+ Easy to write and isolate
+Ring 3     | Unpriviledged Code | Safe fail
+           +--------------------+ Ex: BaSh
+              |
+           +-----------------+ Hard to isolate
+Ring 2     | Priviledge Code | but that can be an advantage
+           +-----------------+ Ex: Service
+              |                          USERLAND
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              |                          KERNELLAND
+           +---------------+
+Ring 1     | Device Driver | In kernelland, get access to
+           +---------------+ the hardware abstracion layer
+              |              Can be compiled seprately as module
+              |
+           +--------------+ Monolyte: /boot/vmlinuz-5.4.0-48-generic
+Ring 0     | Linux Kernel | Imposible to isolate, must shutdown to change
+           +--------------+
+              |                          KERNELLAND
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              |                          UNDERWORLD
+              |
+           +------------+ CPU new funcionality
+Ring -1    | Hypervisor | for enhanced virtualisation
+           +------------+
+              |
+           +------------------------+  UEFI, ex BIOS
+Ring -2    | System Management Mode |  (press f2 at boot)
+           +------------------------+
+              |
+              |                          UNDERWORLD
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              |                          E-SPACE (Harware)
+              |
+           +------------+ Embeded in some
+           | Micro Code | micro controlers
+           +------------+ = (μCPU, μRAM, μSSD)
+              ^
+              |
+           _______
+          | _____ | Cober circuits. Made by computer
+          ||_____|| Programmed with lines of code
+          |  ___  | In VHDL language
+          | |___| |
+          |       | Crafted in China or Vietnam
+          |       |
+          |       |
+          |       |
+          |       |
+          |_______|
