@@ -303,6 +303,7 @@
     # Code inspection
     toto(){ echo titi; }
     type toto
+    declare -fp toto
 
     # Variable inspection
     unset a b c d
@@ -541,9 +542,9 @@
     printf "%s |" "${BASH_SOURCE[@]}"
 
     # Import script file, here vman command in my PATH
-    source "$(which vman)"
+    source "$(command -v vman)"
     # shellcheck disable=SC2002  # Useless cat
-    cat "(which vman)" | vman_select
+    cat "$(command -v vman)" | vman_main
 
     # Conditional main call
     # -- More robust than [[ $0 != "$BASH_SOURCE" ]]

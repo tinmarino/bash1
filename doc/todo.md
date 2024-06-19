@@ -3,7 +3,8 @@
 * [ ] Add more ts command to jump to the tmux man bash
 * [ ] Crear un commando generate rut y un validate RUT, like producer consumer.
 * [ ] hacer lista de oneliner con musica o imagenes
-* [ ] Buscar como escribir un pixel el la pantalla tipo hard
+* [ ] Hacer list de japh y jabh
+* [ ] Also get list of pipelines by Isaac
 * [ ] Make list of commands usefull internally
 * [ ] Prepare link to syntax, explain coumpound statements
 
@@ -28,3 +29,4 @@
 * Fond naming convetion for functions and docstring
   * DONE put google ref
 * [X] Do not repeat yourself, make it simple stupid
+* [X] Buscar como escribir un pixel el la pantalla tipo hard <= PASSED too dangerous
