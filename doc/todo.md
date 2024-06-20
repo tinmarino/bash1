@@ -1,12 +1,15 @@
-* [ ] Make a talbe from high level to low level
-* [ ] Create a toc to move fast, in case
+* [ ] Add the ts commands for tmux execute
 * [ ] Add more ts command to jump to the tmux man bash
+* [X] Make a talbe from high level to low level
+* [X] Create a toc to move fast, in case
 * [ ] Crear un commando generate rut y un validate RUT, like producer consumer.
-* [ ] hacer lista de oneliner con musica o imagenes
-* [ ] Hacer list de japh y jabh
+* [X] hacer lista de oneliner con musica o imagenes
+* [ ] Review all content and ts link to it in toc
+* [X] Hacer list de japh y jabh
 * [ ] Also get list of pipelines by Isaac
 * [ ] Make list of commands usefull internally
 * [ ] Prepare link to syntax, explain coumpound statements
+* [ ] Crear archivo de challenges de Bash, se puede copiar de bash_programming
 
 
 # DONE

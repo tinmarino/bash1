@@ -1,6 +1,9 @@
 
 
 # Introduction
+
+* [Archivo: fun with one liners](./one_liner.sh)
+
 # 1/ Historia de Shell
 ## 1.1/ Cuando esta la Shell?
 
