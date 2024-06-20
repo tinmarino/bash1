@@ -38,3 +38,25 @@ yes hello world
 * Sedtris, a tetris code in Sed: https://github.com/uuner/sedtris
 * Bash Hacker Wiki (I never browsed it, but it semms like Perlmonks): https://web.archive.org/web/20230406205817/https://wiki.bash-hackers.org/ can also see it here: https://flokoe.github.io/bash-hackers-wiki/
 * Bash Source Code: https://flokoe.github.io/bash-hackers-wiki/
+
+
+# Link2, from Bash
+
+### Program
+* [Shellcheck](https://github.com/koalaman/shellchec)
+* [Vim / ALE](https://github.com/dense-analysis/ale)
+* [Vim / Slime](https://github.com/jpalardy/vim-slime)
+* [Tmux](https://github.com/tmux/tmux)
+* [Dotfiles (my)](https://github.com/tinmarino/vimfiles/tree/master/dotfile)
+
+### Documentation
+* [Google Style for BaSh](https://google.github.io/styleguide/shellguide.html)
+* [Object Oriented BaSh](https://stackoverflow.com/questions/36771080)
+
+### Code
+* [Bash Source code](git://git.savannah.gnu.org/bash.git)
+* [Rosetta Code](http://rosettacode.org/wiki/Bourne_Again_SHell)
+* [Pure BaSh Bible](https://github.com/dylanaraps/pure-bash-bible)
+* [Unicode math operators](http://xahlee.info/comp/unicode_math_operators.html)
+* [Bash syntax declaration (Bison)](https://github.com/bminor/bash/blob/bash-5.1/parse.y#L356-L372)
+* [Algorithm for prime number](https://programmingpraxis.files.wordpress.com/2012/09/primenumbers.pdf)

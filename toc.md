@@ -101,6 +101,12 @@ TZ=NGT date -d @0 +"%a, %d %b %Y %H:%M:%S GMT"
 
 ## 1.2/ Donde esta la Shell?
 
+### Los niveles de virtualisación
+
+```bash
+pstree --color=age -sp $$
+```
+
 ### Los niveles de abstración de los lenguages
 
 * Ver [archivo dibujo de los niveles](./res/draw-rings.txt)
@@ -130,23 +136,26 @@ TZ=NGT date -d @0 +"%a, %d %b %Y %H:%M:%S GMT"
 |                   | Verilog      |   |
 
 
-### Los niveles de virtualisación
-
-```bash
-pstree --color=age -sp $$
-```
 
 
 
 
 # 2/ Commandos de Shell
 ## 2.1/ Sentencias (statements)
+###
 
 ```bash
 echo 'Hola colega!'
-echo 'Hola colega!' | sed 's/a/A/g'  # Pipe
-echo 'Hola colega!'; echo 'Que tal?'  # Statement list
+echo 'Hola colega!' | sed 's/a/A/g'   # Pipe
+echo 'Hola colega!'; echo 'Que tal?'  # Statement List
+msg='Hola colega!'; echo "$msg"       # Assignement and Expansion
+
+
+ts "man bash" Enter / "^PARAMETERS" Enter / "^ *A\s*variable\s*may\_.\{-}value\]" Enter zz
+
 ```
+
+
 
 
 ## 2.2/ Parafos (composed statements)
@@ -183,7 +192,9 @@ function func(){
 func a "b c"
 ```
 
-## 2.3/ Capitulos (modules)
+## 2.3/ Gramatica
+
+## 2.4/ Capitulos (modules)
 
 ```bash
 # Import script file, here vman command in my PATH
@@ -223,3 +234,35 @@ Con un archivo en ./demo/
 ```
 
 # Conclusion
+
+## Commands
+
+```bash
+
+vim +'e $VIMRUNTIME/syntax/sh.vim'  # Vim syntax coloration for Bash
+
+# Quoting and expansions
+ts "man bash" Enter "/^EXPANSION" Enter z2 Down Space "/^\s*The\s*order\_.\{-}\.$" Enter
+ts "man bash" Enter "/^SIMPLE COMMAND EXPANSION" Enter
+ts "man bash" Enter "/QUOTING" Enter
+ts "man bash" /EXPANSION / Quote Removal
+    
+# Grammar Doc
+ts "man bash" Enter  "/^SHELL GRAMMAR" Enter "/Compound Commands" Enter zt
+ts "man bash" Enter "/^SHELL BUILTIN COMMANDS" Enter zt z3
+
+
+# Grammar Yacc
+ts "vim ~/Program/Bash/parse.y" ENTER 371G
+vim ./res/yacc-bash.y  # Obtained with vim command: "'<,'>g/^\w\|^\s*|/t$"
+
+```
+## Link
+
+### Books
+* [ABS: Advanced Bash Scripting](https://tldp.org/LDP/abs/abs-guide.pdf)
+  * __The Bash reference__: An in-depth exploration of the art of shell scripting (by Mendel Cooper)
+* [TLPI: The Linux Programming Interface](https://sciencesoftcode.files.wordpress.com/2018/12/the-linux-programming-interface-michael-kerrisk-1.pdf)
+  * __The Linux reference__: A Linux and UNIX System Programming Handbook  (by Michael Kerrisk)
+
+
