@@ -1,19 +1,29 @@
-* [ ] Add the ts commands for tmux execute
-* [ ] Add more ts command to jump to the tmux man bash
-* [X] Make a talbe from high level to low level
-* [X] Create a toc to move fast, in case
-* [ ] Crear un commando generate rut y un validate RUT, like producer consumer.
-* [X] hacer lista de oneliner con musica o imagenes
 * [ ] Review all content and ts link to it in toc
-* [X] Hacer list de japh y jabh
 * [ ] Also get list of pipelines by Isaac
 * [ ] Make list of commands usefull internally
 * [ ] Prepare link to syntax, explain coumpound statements
-* [ ] Crear archivo de challenges de Bash, se puede copiar de bash_programming
+* [ ] Crear archivo de challenges de Bash, se puede copiar de bash_programming, solo desafios
+* [ ] Sacar todo de bash_programing y otros archivos y asegurar la easy referencia
+* [ ] Hacer slides de palabras, glosario, al principio, y buscar bien donde se explica shell vs terminal y solo una vez
+  * [ ] REPL, Prompt
+  * [ ] Terminal
+  * [ ] Shell
+  * [ ] Kernel
+* [ ] Map ,q to ts q BSpace send line and clean screen
+* [ ] Resusitar todo depende del contexto quizas, arith test, command
 
+# IDEA
+
+* [ ] Crear un commando generate rut y un validate RUT, like producer consumer.
 
 # DONE
 
+* [X] Hacer list de japh y jabh
+* [X] Add the ts commands for tmux execute
+* [X] Add more ts command to jump to the tmux man bash
+* [X] Make a talbe from high level to low level
+* [X] Create a toc to move fast, in case
+* [X] hacer lista de oneliner con musica o imagenes
 * Vim: better ctrl-f removing indentation !!!
 * Shbang
   * #!/usr/bin/env bash

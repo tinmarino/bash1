@@ -28,7 +28,7 @@
     : 'Parenthesis or Comma -> Space
 
       ```
-      "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
+      ts "man bash" Enter / "^SHELL GRAMMAR" Enter / "^ *A\s*simple\s*com\_.\{-}operator\." Enter
       A simple command  is  a sequence of optional variable assignments followed by blank-separated words and redirections, and terminated by a control operator
       ```
       Note the blank-separated

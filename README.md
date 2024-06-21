@@ -1,4 +1,4 @@
-# TODO
+# More advanced content
 
 * Vim: Embed markdown syntax in docstring
 * Code: finish is prime
@@ -14,11 +14,21 @@ a2enmod info
 apachectl -t -D DUMP_CONFIG
 ```
 
-# COmmand
+# Command
 
 ```bash
 yes hello world
 ```
+
+# REPL
+
+bash
+python3
+ipython3
+php -a  # do not forget the ";" at end of commands: https://www.php.net/manual/en/features.commandline.php
+reply
+raku
+
 
 # Link
 
@@ -38,6 +48,7 @@ yes hello world
 * Sedtris, a tetris code in Sed: https://github.com/uuner/sedtris
 * Bash Hacker Wiki (I never browsed it, but it semms like Perlmonks): https://web.archive.org/web/20230406205817/https://wiki.bash-hackers.org/ can also see it here: https://flokoe.github.io/bash-hackers-wiki/
 * Bash Source Code: https://flokoe.github.io/bash-hackers-wiki/
+* Jupyter Kernels: https://github.com/jupyter/jupyter/wiki/Jupyter-kernels
 
 
 # Link2, from Bash
